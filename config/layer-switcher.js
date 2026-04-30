@@ -112,6 +112,8 @@ export function registerLayer(layer, title, type = 'overlay', legendItems = [], 
     layer.set('type', type);
     layer.set('hidden', hidden);
     
+     layer.set('legendItems', legendItems); 
+
     // Skip UI creation if hidden
     if (hidden) return { layer };
     

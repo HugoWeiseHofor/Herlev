@@ -2,6 +2,7 @@
 // Main Entry Point  –  map1
 // ==========================
 
+import { generateReport } from '../config/report-generator.js'; 
 import { initLayerSwitcher, registerLayer, baseLayers, createGroup } from '../config/layer-switcher.js';
 import {
     addThematicLayer,
@@ -131,3 +132,44 @@ import('./layers.js').then(module => {
 });
 
 export { map };
+
+
+
+// Create Report Button
+const reportBtn = document.createElement('button');
+reportBtn.id = 'btn-generate-report';
+reportBtn.textContent = '📄 Generer PDF over kortudsnit';
+reportBtn.style.cssText = `
+    position: absolute; 
+    bottom: 120px; 
+    right: 14px; 
+    z-index: 1001; 
+    padding: 8px 12px; 
+    background: #2c5f8a; 
+    color: #fff; 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    font-size: 13px;
+    transition: all 0.2s ease;
+`;
+
+// Add hover effect
+reportBtn.addEventListener('mouseenter', () => {
+    reportBtn.style.background = '#1d4263';
+    reportBtn.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
+});
+reportBtn.addEventListener('mouseleave', () => {
+    reportBtn.style.background = '#2c5f8a';
+    reportBtn.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+});
+
+reportBtn.addEventListener('click', () => {
+    // Import is handled inside the event or at top of file
+    import('./config/report-generator.js').then(({ generateReport }) => {
+        generateReport(map);
+    });
+});
+
+document.body.appendChild(reportBtn);
