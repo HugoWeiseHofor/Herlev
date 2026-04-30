@@ -166,10 +166,6 @@ reportBtn.addEventListener('mouseleave', () => {
 });
 
 reportBtn.addEventListener('click', () => {
-    // Import is handled inside the event or at top of file
-    import('./config/report-generator.js').then(({ generateReport }) => {
-        generateReport(map);
-    });
 });
 
 document.body.appendChild(reportBtn);
