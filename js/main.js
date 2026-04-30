@@ -166,6 +166,6 @@ reportBtn.addEventListener('mouseleave', () => {
 });
 
 reportBtn.addEventListener('click', () => {
+    generateReport(map); 
 });
-
 document.body.appendChild(reportBtn);
