@@ -2,8 +2,8 @@
 // Layer Creation Functions
 // ==========================
 
-import { hexToRgb, interpolateColor, rgbToString, resolveColor } from '/config/color-helpers.js';
-import { registerLayer } from '/config/layer-switcher.js';
+import { hexToRgb, interpolateColor, rgbToString, resolveColor } from './color-helpers.js';
+import { registerLayer } from './layer-switcher.js';
 
 // ==========================
 // buildLabelStyle — Shared map label helper

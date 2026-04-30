@@ -1,4 +1,4 @@
-import { styles } from '/config/layer-styles.js';
+import { styles } from '../config/layer-styles.js';
 
 export function addAllLayers(map, projection, fns) {
     const {
