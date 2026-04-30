@@ -2,7 +2,7 @@
 // Main Entry Point  –  map1
 // ==========================
 
-import { initLayerSwitcher, registerLayer, baseLayers, createGroup } from './config/layer-switcher.js';
+import { initLayerSwitcher, registerLayer, baseLayers, createGroup } from '../config/layer-switcher.js';
 import {
     addThematicLayer,
     addSingleColorLayer,
@@ -11,8 +11,8 @@ import {
     addGraduatedLineLayer,
     addClassedPointLayer,
     addWMSLayer
-} from './config/layer-functions.js';
-import { initPopup, showPopup, hidePopup } from './config/popup.js';
+} from '../config/layer-functions.js';
+import { initPopup, showPopup, hidePopup } from '../config/popup.js';
 
 // ==========================
 // Projection setup EPSG:25832

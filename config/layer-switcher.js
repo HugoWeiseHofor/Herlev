@@ -2,7 +2,7 @@
 // Layer Switcher with Groups + Legend
 // ==========================
 
-import { hexToRgb, interpolateColor, rgbToString, resolveColor } from '/config/color-helpers.js';
+import { hexToRgb, interpolateColor, rgbToString, resolveColor } from '../config/color-helpers.js';
 
 export const baseLayers = [];
 
