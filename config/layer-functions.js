@@ -496,19 +496,18 @@ export function addCategorizedLayer(map, config, projection) {
         };
     });
 
-    function styleFunction(feature) {
-        try {
-            const cat = categoryMap[feature.get(config.field)];
-            const fillColor = cat?.fill ?? defaultFill;
-            const strokeColor = cat?.stroke ?? cat?.fill ?? defaultStroke;
-            const geomType = feature.getGeometry()?.getType();
-            
-            return withLabel(makeGeomStyle(config, geomType, fillColor, strokeColor, strokeColor, cat?.strokeWidth), config, feature);
-        } catch (err) {
-            console.error('[addCategorizedLayer] Style error:', err, feature);
-            return null;
-        }
+    function styleFunction(feature, resolution) {
+    try {
+        const cat = categoryMap[feature.get(config.field)];
+        const fillColor = cat?.fill ?? defaultFill;
+        const strokeColor = cat?.stroke ?? cat?.fill ?? defaultStroke;
+        const geomType = feature.getGeometry()?.getType();
+        return withLabel(makeGeomStyle(config, geomType, fillColor, strokeColor, strokeColor), config, feature, resolution);
+    } catch (err) {
+        console.error('[addCategorizedLayer] Style error:', err, feature);
+        return null;
     }
+}
 
   const source = makeSafeVectorSource(config, projection, 'addCategorizedLayer');
   if (!source) return null;
