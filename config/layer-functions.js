@@ -502,11 +502,11 @@ export function addCategorizedLayer(map, config, projection) {
         const fillColor = cat?.fill ?? defaultFill;
         const strokeColor = cat?.stroke ?? cat?.fill ?? defaultStroke;
         const geomType = feature.getGeometry()?.getType();
-        return withLabel(makeGeomStyle(config, geomType, fillColor, strokeColor, strokeColor), config, feature, resolution);
-    } catch (err) {
-        console.error('[addCategorizedLayer] Style error:', err, feature);
-        return null;
-    }
+        return withLabel(makeGeomStyle(config, geomType, fillColor, strokeColor, strokeColor, cat?.strokeWidth), config, feature);
+        } catch (err) {
+            console.error('[addCategorizedLayer] Style error:', err, feature);
+            return null;
+        }
 }
 
   const source = makeSafeVectorSource(config, projection, 'addCategorizedLayer');
