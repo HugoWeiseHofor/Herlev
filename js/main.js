@@ -11,6 +11,7 @@ import {
     addPieChartLayer,
     addGraduatedLineLayer,
     addClassedPointLayer,
+    addClassedIconLayer,
     addWMSLayer
 } from '../config/layer-functions.js';
 import { initPopup, showPopup, hidePopup } from '../config/popup.js';
@@ -125,6 +126,7 @@ import('./layers.js').then(module => {
         addPieChartLayer,
         addGraduatedLineLayer,
         addClassedPointLayer,
+        addClassedIconLayer,
         createGroup,
         registerLayer,
         addWMSLayer
@@ -141,8 +143,8 @@ reportBtn.id = 'btn-generate-report';
 reportBtn.textContent = '📄 Generer PDF over kortudsnit';
 reportBtn.style.cssText = `
     position: absolute; 
-    bottom: 120px; 
-    right: 14px; 
+    top: 80px; 
+    left: 14px; 
     z-index: 1001; 
     padding: 8px 12px; 
     background: #2c5f8a; 

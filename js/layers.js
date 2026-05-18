@@ -8,6 +8,7 @@ export function addAllLayers(map, projection, fns) {
         addPieChartLayer,
         addGraduatedLineLayer,
         addClassedPointLayer,
+        addClassedIconLayer,
         createGroup,
     } = fns;
 
@@ -19,6 +20,7 @@ export function addAllLayers(map, projection, fns) {
             case 'pieChart':      return addPieChartLayer(map, config, projection);
             case 'graduatedLine': return addGraduatedLineLayer(map, config, projection);
             case 'classedPoint':  return addClassedPointLayer(map, config, projection);
+            case 'classedIcon':  return addClassedIconLayer(map, config, projection);
             case 'wms':           return fns.addWMSLayer(map, config);
             default:
                 console.error(`[addLayer] Unknown type: "${config.type}"`);
@@ -169,11 +171,32 @@ export function addAllLayers(map, projection, fns) {
     addLayer( { ...styles.project_spildevand,folder_destination: 'GeoJSON-data/Projektflade_Spildevand.geojson',visible: false, group_container: grp_projektplanflader },);
     addLayer( { ...styles.plan_spildevand,   folder_destination: 'GeoJSON-data/Planflade_Spildevand.geojson',   visible: false, group_container: grp_projektplanflader },);
 
+
+    // ----------------------------------------------------------------
+    // Ledningssystem 
+    // ----------------------------------------------------------------
+    const grp_Ledningssystem   = createGroup({ title: 'Ledningssystem', fold: 'close' });
+
+    addLayer( { ...styles.hovedledninger, folder_destination: 'GeoJSON-data/hovedledninger.geojson', visible: false, group_container: grp_Ledningssystem },);
+    addLayer( { ...styles.stik, folder_destination: 'GeoJSON-data/stik.geojson', visible: false, group_container: grp_Ledningssystem },);
+    addLayer( { ...styles.broende, folder_destination: 'GeoJSON-data/broende1.geojson', visible: false, group_container: grp_Ledningssystem },);
+    addLayer( { ...styles.knuder, folder_destination: 'GeoJSON-data/knuder.geojson', visible: false, group_container: grp_Ledningssystem },);
+    
+    // ----------------------------------------------------------------
+    // Projekter 
+    // ----------------------------------------------------------------
+    const grp_projekter   = createGroup({ title: 'Projekter', fold: 'close' });
+
+    addLayer( { ...styles.projekter, folder_destination: 'GeoJSON-data/projekter.geojson', visible: false, group_container: grp_projekter },);
+
+
     // ----------------------------------------------------------------
     // Omrids (hidden background outline)
     // ----------------------------------------------------------------
     const grp_baggrund = createGroup({ title: '', fold: 'close', hidden: true });
     addLayer({ ...styles.municipality_outline, folder_destination: 'GeoJSON-data/Herlev.geojson', hidden: true, group_container: grp_baggrund },);
+    addLayer({ ...styles.herlev_graense, folder_destination: 'GeoJSON-data/herlevgraense.geojson', hidden: false });
+
 
     // ----------------------------------------------------------------
     // Damage Summary Box

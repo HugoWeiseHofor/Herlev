@@ -16,6 +16,7 @@
 //       group_container: grp_soer
 //   }, projection);
 
+
 export const styles = {
 
     // ================================================================
@@ -701,344 +702,6 @@ export const styles = {
     },    
 
 
-    // København
-
-    indledendeudpegninger_kbh: {
-        type: 'categorized',
-        title: 'Kandidater til undersøgelsesområder til TGV',
-        field: 'id',
-        categories: [
-            { value: '1', fill_color: '#f0a890', fill_alpha: 0.65, label: ' ' },
-            { value: '2', fill_color: '#484ee4', fill_alpha: 0.65, label: 'FRB  Ågade' },
-            { value: '3', fill_color: '#16d8ea', fill_alpha: 0.65, label: 'Hillerødgade' },
-            { value: '4', fill_color: '#705a99', fill_alpha: 0.65, label: 'Vanløse' },
-            { value: '5', fill_color: '#f91f14', fill_alpha: 0.65, label: 'Vanløse' },
-            { value: '6', fill_color: '#e73fc8', fill_alpha: 0.65, label: 'HUSUM syd' },
-            { value: '7', fill_color: '#a13846', fill_alpha: 0.65, label: 'Bystævnet' },
-            { value: '8', fill_color: '#a6c04f', fill_alpha: 0.65, label: 'Tingbjerg' },
-            { value: '9', fill_color: '#c99628', fill_alpha: 0.65, label: 'Grønnemose' },
-            { value: '10', fill_color: '#e719f2', fill_alpha: 0.65, label: 'Horsebakke' },
-            { value: '11', fill_color: '#84368b', fill_alpha: 0.65, label: 'HF Brønshøj' },
-            { value: '12', fill_color: '#d6308b', fill_alpha: 0.65, label: 'Pilesvinget' },
-            { value: '13', fill_color: '#ffc037', fill_alpha: 0.65, label: 'Hulgårdsvej' },
-            { value: '14', fill_color: '#f02d37', fill_alpha: 0.65, label: 'Lykkebo' },
-            { value: '15', fill_color: '#46ded6', fill_alpha: 0.65, label: 'Følager' },
-            { value: '16', fill_color: '#dfed16', fill_alpha: 0.65, label: 'Enghavevej' },
-            { value: '17', fill_color: '#949c22', fill_alpha: 0.65, label: 'HF Frederi' },
-            { value: '18', fill_color: '#55ed85', fill_alpha: 0.65, label: 'Bispebjerg' },
-            { value: '19', fill_color: '#542cf1', fill_alpha: 0.65, label: 'Rymarksvej' },
-            { value: '20', fill_color: '#952140', fill_alpha: 0.65, label: 'HF KOngedy' },
-            { value: '21', fill_color: '#34cb00', fill_alpha: 0.65, label: 'Bella C' },
-        ],
-        default_fill_color: '#999999', stroke_color: '#ffffff00', stroke_width: 0,
-        fill_alpha: 0.85, z_index: 1,
-        attributeTitleField: 'attributter',
-    attributes: [
-        { field: 'Beskrivels', label: 'Navn' },
-    ],
-        info_box: {
-            title: 'Kandidater til undersøgelsesområder til TGV',          
-            text:  'Tryk for info.', 
-            border_color: '#c43c39'     
-}
-    },    
-    
-
-    middelalderbyen: {
-        type: 'singleColor',
-        title: 'Middelalderbyen',
-        fill_color: 'rgba(230, 103, 29, 0.58)', stroke_color: 'rgb(248, 182, 0)', stroke_width: 0,
-        fill_alpha: 0.85, z_index: 2
-    },
-
-    Matrikler_med_draen: {
-        type: 'singleColor',
-        title: 'Matrikler med dræn',
-        fill_color: '#f1bd7e', fill_alpha: 0.85, stroke_color: 'rgba(0,0,0,1)', stroke_width: 0,
-        z_index: 2, max_resolution: 4,
-        info_box: {
-            title: 'Matrikler med dræn',          
-            text:  'Zoom ind for at aktivere.', 
-            border_color: '#c43c39'     
-}
-    },
-
-    Matrikler_med_lokal_nedsivning: {
-        type: 'singleColor',
-        title: 'Matrikler med lokal nedsivning',
-        fill_color: '#8ebdc6', fill_alpha: 0.85, stroke_color: 'rgba(0,0,0,1)', stroke_width: 0,
-        z_index: 2, max_resolution: 4,
-        info_box: {
-            title: 'Matrikler med lokal nedsivning',          
-            text:  'Zoom ind for at aktivere.', 
-            border_color: '#c43c39'     
-}
-    },
-
-
-    Nedsivningsanlaeg: {
-        type: 'singleColor',
-        title: 'Nedsivningsanlæg',
-        fill_color: '#ded031', fill_alpha: 0.85, stroke_color: 'rgba(0,0,0,1)', stroke_width: 0,
-        z_index: 2, max_resolution: 4,
-        info_box: {
-            title: 'Nedsivningsanlæg',          
-            text:  'Zoom ind for at aktivere.', 
-            border_color: '#c43c39'     
-}
-    },
-
-    dybde_til_vandspejlet_i_kalken: {
-        type: 'classedPoint',
-        title: 'dybde til vandspejlet i kalken (gradient)',
-        field: 'Gradient_m',
-        stroke_color: '#ffffff', stroke_width: 1,
-        breaks: [-3, 0, 1, 2, 3, 9], 
-        class_colors:  ['#d7191c','#fdae61', '#ffffbf', '#abdda4', '#2b83ba',],
-        legend_decimal_places: 0,
-        radius: 4, fill_alpha: 0.85, z_index: 1,
-        attributeTitleField: 'attributter',
-        attributes: [
-            { field: 'Gradient_m',   label: 'Gradient (m)' },
-        ]
-    },
-    ME_Residualer_for_HIP10m: {
-        type: 'classedPoint',
-        title: 'ME Residualer for HIP10m',
-        field: 'ME',
-        stroke_color: '#ffffff', stroke_width: 1,
-        breaks: [-5, -2, -1, -0.5, 0.5, 1, 2, 7], 
-        class_colors:  ['#2b83ba','#80bfab', '#c7e8ad', '#ffffbf', '#fec980', '#f07c4a','#d7191c',],
-        legend_decimal_places: 0,
-        radius: 4, fill_alpha: 0.85, z_index: 1,
-        attributeTitleField: 'attributter',
-        attributes: [
-            { field: 'ME',   label: '(m)' },
-        ]
-    },
-
-    Kalkboringer_RegionH_mut: {
-        type: 'classedPoint',
-        title: 'Kalkboringer RegionH (mut)',
-        field: 'Pejling mut',
-        stroke_color: '#ffffff', stroke_width: 1,
-        breaks: [0, 2, 3, 4, 15], 
-        class_colors:  ['#d7191c','#fdae61', '#ffffbf', '#2b83ba',],
-        legend_decimal_places: 0,
-        radius: 4, fill_alpha: 0.85, z_index: 1,
-        attributeTitleField: 'attributter',
-        attributes: [
-            { field: 'Pejling mut',   label: '(m)' },
-        ]
-    },    
-
-    Kalkboringer_Ramboll_mut: {
-        type: 'classedPoint',
-        title: 'Kalkboringer Ramboll (mut)',
-        field: 'Nedstik                   (m u. top rør)',
-        stroke_color: '#ffffff', stroke_width: 1,
-        breaks: [0, 2, 3, 4, 15], 
-        class_colors:  ['#d7191c','#fdae61', '#ffffbf', '#2b83ba',],
-        legend_decimal_places: 0,
-        radius: 4, fill_alpha: 0.85, z_index: 1,
-        attributeTitleField: 'attributter',
-        attributes: [
-            { field: 'Nedstik                   (m u. top rør)',},
-        ]
-    }, 
-
-    jupiter_tgv_pejlinger_vinter: {
-        type: 'classedPoint',
-        title: 'jupiter tgv pejlinger vinter',
-        field: 'watlevgrsu',
-        stroke_color: '#000000', stroke_width: 1,
-        breaks: [0, 0.5, 1, 2, 3, 5], 
-        class_colors:  ['#d7191c','#fdae61', '#ffffbf', '#abdda4', '#2b83ba',],
-        legend_decimal_places: 0,
-        radius: 4, fill_alpha: 0.85, z_index: 1,
-        attributeTitleField: 'attributter',
-        attributes: [
-            { field: 'watlevgrsu',   label: 'watlevgrsu' },
-        ]
-    },
-
-    jupiter_tgv_pejlinger_i_sand: {
-        type: 'classedPoint',
-        title: 'jupiter tgv pejlinger i sand',
-        field: 'watlevgrsu',
-        stroke_color: '#ffffff', stroke_width: 1,
-        breaks: [0, 2, 3, 4, 5], 
-        class_colors:  ['#d7191c','#fdae61', '#ffffbf', '#2b83ba',],
-        legend_decimal_places: 0,
-        radius: 4, fill_alpha: 0.85, z_index: 1,
-        attributeTitleField: 'attributter',
-        attributes: [
-            { field: 'watlevgrsu',},
-        ]
-    }, 
-
-
-    jupiter_tgv_pejlinger_i_ler: {
-        type: 'classedPoint',
-        title: 'jupiter tgv pejlinger i ler',
-        field: 'watlevgrsu',
-        stroke_color: '#ffffff', stroke_width: 1,
-        breaks: [0, 2, 3, 4, 5], 
-        class_colors:  ['#d7191c','#fdae61', '#ffffbf', '#2b83ba',],
-        legend_decimal_places: 0,
-        radius: 4, fill_alpha: 0.85, z_index: 1,
-        attributeTitleField: 'attributter',
-        attributes: [
-            { field: 'watlevgrsu',},
-        ]
-    },     
-
-    GEO_tgv_nedsivning_pejlinger_vinter: {
-        type: 'classedPoint',
-        title: 'GEO tgv nedsivning pejlinger vinter',
-        field: 'MUT',
-        stroke_color: '#000000', stroke_width: 1,
-        breaks: [0, 0.5, 1, 2, 3, 5], 
-        class_colors:  ['#d7191c','#fdae61', '#ffffbf', '#abdda4', '#2b83ba',],
-        legend_decimal_places: 0,
-        radius: 4, fill_alpha: 0.85, z_index: 1,
-        attributeTitleField: 'attributter',
-        attributes: [
-            { field: 'MUT',   label: '' },
-        ]
-    },
-
-    GEO_tgv_boringer_vinter: {
-        type: 'classedPoint',
-        title: 'GEO tgv boringer vinter',
-        field: 'nedstik',
-        stroke_color: '#000000', stroke_width: 1,
-        breaks: [0, 0.5, 1, 2, 3, 5], 
-        class_colors:  ['#d7191c','#fdae61', '#ffffbf', '#abdda4', '#2b83ba',],
-        legend_decimal_places: 0,
-        radius: 4, fill_alpha: 0.85, z_index: 1,
-        attributeTitleField: 'attributter',
-        attributes: [
-            { field: 'nedstik',   label: 'm' },
-        ]
-    },    
-
-    TGV_oplande_fra_HIP10m: {
-        type: 'thematic',
-        title: 'TGV mut i kloakoplande fra hip10m',
-        field: 'HIP10m_kloakoplande_median',
-        class_colors: ['#d7191c', '#fec980', '#c7e8ad', '#2b83ba'],
-        stroke_color: 'rgba(0,0,0,0.5)', stroke_width: 0.5,
-        fill_alpha: 0.85, num_classes: 4,
-        breaks: [0.4, 1, 1.5, 2, 3],
-        z_index: 1,
-        attributeTitleField: 'attributter',
-        attributes: [
-            { field: 'HIP10m_kloakoplande_median', label: 'TGV mut i kloakoplande fra hip10m' },
-        ]
-    },
-
-    kbhpotentialekort: {
-        type: 'singleColor',
-        title: 'Grundvandspotentialet i kalkmagasinet April 2024',
-        fill_color: '#0112ff', fill_alpha: 1, stroke_color: 'rgb(4, 0, 255)', stroke_width: 0,
-        z_index: 2,
-        map_label: {
-            field: 'Kote', 
-            color: '#1a1a1a',         
-            outline_color: '#ffffff',
-            placement: 'line',       
-     }, info_box: {
-            title: 'Grundvandspotentialet i kalkmagasinet April 2024',          
-            image:  '../images/Grundvandspotentialet.png', 
-            border_color: '#c43c39'     
-}
-    },
-
-    kbh_pejlinger:{
-    type: 'singleColor',
-    title: 'Pejlinger 2024 [m DVR]',
-    point_style: 'circle',   // circle | square | triangle | star | cross | x
-    point_radius: 2.5,
-    fill_color: '#0011ff',
-    fill_alpha: 0.9,
-    stroke_color: '#ffffff',
-    stroke_width: 1,
-    geometry_type: 'point',  // tells the legend to draw a point swatch
-    z_index: 2,
-    map_label: {
-            field: 'Pejlekote', 
-            color: '#1a1a1a',         
-            outline_color: '#ffffff',
-            placement: 'point',       
-     },
-    },
-
-
-    kbh_tvivlsomme_pejlinger:{
-    type: 'singleColor',
-    title: 'Tvivlsomme pejlinger 2024 [m DVR90]',
-    point_style: 'circle',   // circle | square | triangle | star | cross | x
-    point_radius: 2.5,
-    fill_color: '#ff0000',
-    fill_alpha: 0.9,
-    stroke_color: '#ffffff',
-    stroke_width: 1,
-    geometry_type: 'point',  // tells the legend to draw a point swatch
-    z_index: 2,
-    map_label: {
-            field: 'Pejlekote', 
-            color: '#1a1a1a',         
-            outline_color: '#ffffff',
-            placement: 'point',       
-     },
-    },
-
-    borgerhenvendelse_koebenhavn: {
-    type: 'singleColor',
-    title: 'Borgerhenvendelse',
-    fill_color: '#ff0000',
-    fill_alpha: 0.70,
-    stroke_color: 'rgb(255, 255, 255)',
-    stroke_width: 0,
-    z_index: 2,
-    attributeTitleField: 'attributter',
-    attributes: [
-        { field: 'bemaerkning', label: 'Bemærkninger i zonen' },
-    ],
-    info_box: {
-        title: 'Borgerhenvendelse angående tgv indenfor zonerne. Klik på zone for henvendelse',
-        border_color: '#c43c39',
-    },
-
-},
-
-// Brøndby
-
-broenby_udpegninger: {
-        type: 'singleColor',
-        title: 'Udpegede undersøgelsesområder',
-        fill_color: '#ff873c', fill_alpha: 0.85, stroke_color: 'rgb(255, 255, 255)', stroke_width: 0,
-        z_index: 2,
-        attributes: [
-        { field: 'Omraade', label: 'Område:' },
-    ],
-    },
-
-// albertslund
-    borgerhenvendelse_albertslund: {
-        type: 'singleColor',
-        title: 'Borgerhenvendelse',
-        fill_color: '#ff873c', fill_alpha: 0.85, stroke_color: 'rgb(255, 255, 255)', stroke_width: 0,
-        z_index: 2,
-        info_box: {
-            title: 'Borgerhenvendelse',          
-            text:  'Borgerhenvendelse angående tgv indenfor cirklen', 
-            border_color: '#c43c39'     
-}
-    },
-
-
 // Vestegn potentialekort
     vestegnpotentialekort: {
         type: 'singleColor',
@@ -1056,13 +719,13 @@ broenby_udpegninger: {
     vestegn_pejlinger:{
     type: 'singleColor',
     title: 'Pejlinger 2025 [m DVR]',
-    point_style: 'circle',   // circle | square | triangle | star | cross | x
+    point_style: 'circle',  
     point_radius: 2.5,
     fill_color: '#0011ff',
     fill_alpha: 0.9,
     stroke_color: '#ffffff',
     stroke_width: 1,
-    geometry_type: 'point',  // tells the legend to draw a point swatch
+    geometry_type: 'point', 
     z_index: 2,
     map_label: {
             field: 'VSP 2025', 
@@ -1070,6 +733,131 @@ broenby_udpegninger: {
             outline_color: '#ffffff',
             placement: 'point',       
      },
+    },
+
+    hovedledninger: {
+        type: 'categorized',
+        title: 'Hovedledninger',
+        field: 'TYPEAFLOEB',
+        geometry_type: 'line', 
+        stroke_width: 3,
+        categories: [
+            { value: 'Fælles',     stroke_color: '#09ff00b0', label: 'Fælles' },
+            { value: 'Regnvand',   stroke_color: '#0004ffb0', label: 'Regnvand' },
+            { value: 'Spildevand', stroke_color: '#ff0000b0', label: 'Spildevand' },
+        ],
+        default_fill_color: '#999999', stroke_color: '#ffffff00', stroke_width: 1,
+        fill_alpha: 0.85, z_index: 1,
+        map_label: {
+            field: 'LABELTEXT', 
+            color: '#1a1a1a',         
+            outline_color: '#ffffff',
+            placement: 'line',
+            max_resolution: 0.5       
+     },
+    },
+
+    broende: {
+        type: 'categorized',
+        title: 'Brønde',
+        field: 'TYPEAFLOEB',
+        geometry_type: 'point', 
+        stroke_width: 3,
+        categories: [
+            { value: 'Fælles',     stroke_color: '#09ff00b0', fill_color: '#ffffff00', label: 'Fælles' },
+            { value: 'Regnvand',   stroke_color: '#0004ffb0', fill_color: '#ffffff00', label: 'Regnvand' },
+            { value: 'Spildevand', stroke_color: '#ff0000b0', fill_color: '#ffffff00', label: 'Spildevand' },
+        ],
+        default_fill_color: '#999999', stroke_color: '#ffffff00', stroke_width: 1,
+        fill_alpha: 0.85, z_index: 1,
+        max_resolution: 1,
+        info_box: {
+            title: 'Brønde',          
+            text:  'Zoom for at aktivere kortlag', 
+            border_color: '#c43c39'     
+}
+    },
+
+    knuder: {
+        type: 'classedIcon',
+        title: 'Knuder',
+        field: 'KNUDETYPE',
+        geometry_type: 'point', 
+        stroke_width: 3,
+        classes: [
+            { value: 'Overløb',          src: 'images/overloeb.png',         scale: 1.2, label: 'Overløb' },
+            { value: 'Fordelerbygværk',  src: 'images/fordelerbygvaerk.png', scale: 0.4, label: 'Fordelerbygværk' },
+            { value: 'Nedsivningsanlæg', src: 'images/nedsivningsanlaeg.png',scale: 0.4, label: 'Nedsivningsanlæg' },
+            { value: 'Målerbygværk',     src: 'images/maalerbygvaerk.png',   scale: 0.4, label: 'Målerbygværk' },
+            { value: 'Regulering',       src: 'images/Regulering.png',       scale: 0.4, label: 'Regulering' },
+            { value: 'Renseanlæg',       src: 'images/Renseanlaeg.png',      scale: 0.4, label: 'Renseanlæg' },
+            { value: 'Sandfang',         src: 'images/Sandfang.png',         scale: 0.8, label: 'Sandfang' },
+            { value: 'Tank',             src: 'images/Tank.png',             scale: 0.4, label: 'Tank' },
+            { value: 'Udløb',            src: 'images/udloeb.png',           scale: 0.8, label: 'Udløb' },
+            { value: 'Udskiller',        src: 'images/Udskiller.png',        scale: 0.4, label: 'Udskiller' },
+            { value: 'Bassin',           src: 'images/bassin.png',           scale: 0.4, label: 'Bassin' },
+            { value: 'Pumpestation',     src: 'images/pumpestation.png',     scale: 1,   label: 'Pumpestation' },
+        ],
+        default_fill_color: '#999999', stroke_color: '#ffffff00', stroke_width: 1,
+        fill_alpha: 0.85, z_index: 1,
+        map_label: {
+            field: 'KNUDENAVN', 
+            color: '#1a1a1a',         
+            outline_color: '#ffffff',
+            placement: 'point',
+            font: 'bold 8px Arial',
+            max_resolution: 1,
+            offset_y: 5,       
+     },
+    },
+
+    stik: {
+        type: 'singleColor',
+        title: 'Stikledninger',
+        geometry_type: 'line',
+        fill_alpha: 1, stroke_color: 'rgb(0, 0, 0)', stroke_width: 1,
+        default_fill_color: '#999999', stroke_width: 1,
+        fill_alpha: 0.85, z_index: 1,
+     max_resolution: 1,
+        info_box: {
+            title: 'Stikledninger',          
+            text:  'Zoom for at aktivere kortlag', 
+            border_color: '#c43c39'     
+}
+    },
+
+
+projekter: {
+        type: 'categorized',
+        title: 'Projekter',
+        field: 'projektnavn',
+        categories: [
+            { value: 'Nedre Kagså projektet', stroke_width: 3, fill_color: '#ffffff00', stroke_color: '#92c534', fill_alpha: 0.85, label: 'Nedre Kagså projektet' },
+            { value: 'Kagsåparkens regnvandsprojekt', stroke_width: 3, fill_color: '#ffffff00', stroke_color: '#064b28', fill_alpha: 0.85, label: 'Kagsåparkens regnvandsprojekt' },
+            { value: 'Kagsmosens skybrudsprojektet', stroke_width: 3, fill_color: '#ffffff00', stroke_color: '#0fdb08', fill_alpha: 0.85, label: 'Kagsmosens skybrudsprojektet' },
+            { value: 'Musikkvarteret', stroke_width: 3, fill_color: '#ffffff00', stroke_color: '#2600ff', fill_alpha: 0.85, label: 'Musikkvarteret' },
+            { value: 'Mørkhøj separering', stroke_width: 3, fill_color: '#ffffff00', stroke_color: '#ff7300', fill_alpha: 0.85, label: 'Mørkhøj separering' },
+            { value: 'Hverdagsregnprojektet', stroke_width: 3, fill_color: '#ffffff00', stroke_color: '#00e1ff', fill_alpha: 0.85, label: 'Hverdagsregnprojektet' },
+        ],
+        default_fill_color: '#99999900', stroke_color: '#ffffff00', stroke_width: 0,
+        fill_alpha: 0.85, z_index: 1,
+        map_label: {
+            field: 'projektnavn', 
+            color: '#1a1a1a',         
+            outline_color: '#ffffff',
+            placement: 'point',
+            font: 'bold 12px Arial',     
+     },
+    },
+
+herlev_graense: {
+        type: 'singleColor',
+        title: 'Herlev',
+        geometry_type: 'line',
+        fill_color: '#ffffff00',
+        fill_alpha: 1, stroke_color: 'rgb(83, 83, 83)', stroke_width: 1,
+        default_fill_color: '#999999', stroke_width: 1,
+        fill_alpha: 0.85, z_index: 1,
     },
 
 };

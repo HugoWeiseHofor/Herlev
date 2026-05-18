@@ -7,42 +7,52 @@ import { hexToRgb, interpolateColor, rgbToString, resolveColor } from '../config
 export const baseLayers = [];
 
 export function buildLegendDiv(legendItems) {
-    if (!legendItems || legendItems.length === 0) return null;
+if (!legendItems || legendItems.length === 0) return null;
+const legendDiv = document.createElement('div');
+const isGradient = legendItems.length > 0 && legendItems[0].gradient;
+legendDiv.className = isGradient ? 'ls-legend ls-legend-gradient' : 'ls-legend';
+
+legendItems.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'ls-legend-row';
     
-    const legendDiv = document.createElement('div');
-    const isGradient = legendItems.length > 0 && legendItems[0].gradient;
-    legendDiv.className = isGradient ? 'ls-legend ls-legend-gradient' : 'ls-legend';
+    const swatch = document.createElement('span');
+    swatch.className = 'ls-swatch';
     
-    legendItems.forEach(item => {
-        const row = document.createElement('div');
-        row.className = 'ls-legend-row';
+    if (item.line) {
+        swatch.style.background = 'transparent';
+        swatch.style.border = 'none';
+        swatch.style.display = 'flex';
+        swatch.style.alignItems = 'center';
+        swatch.style.justifyContent = 'center';
         
-        const swatch = document.createElement('span');
-        swatch.className = 'ls-swatch';
-        
-        if (item.line) {
-            swatch.style.background = 'transparent';
-            swatch.style.border = 'none';
-            swatch.style.display = 'flex';
-            swatch.style.alignItems = 'center';
-            swatch.style.justifyContent = 'center';
-            
-            const line = document.createElement('span');
-            line.style.display = 'block';
-            line.style.width = '16px';
-            line.style.height = `${Math.max(1, item.lineWidth || 2)}px`;
-            line.style.background = item.color;
-            line.style.borderRadius = '1px';
-            swatch.appendChild(line);
-        } else if (item.point) {
-            swatch.style.background = 'transparent';
-            swatch.style.border = 'none';
-            swatch.style.display = 'flex';
-            swatch.style.alignItems = 'center';
-            swatch.style.justifyContent = 'center';
-            swatch.style.width = '20px';
-            swatch.style.height = '20px';
-            
+        const line = document.createElement('span');
+        line.style.display = 'block';
+        line.style.width = '16px';
+        line.style.height = `${Math.max(1, item.lineWidth || 2)}px`;
+        line.style.background = item.color;
+        line.style.borderRadius = '1px';
+        swatch.appendChild(line);
+    } else if (item.point) {
+        swatch.style.background = 'transparent';
+        swatch.style.border = 'none';
+        swatch.style.display = 'flex';
+        swatch.style.alignItems = 'center';
+        swatch.style.justifyContent = 'center';
+        swatch.style.width = '20px';
+        swatch.style.height = '20px';
+
+        if (item.iconSrc || item.src) {
+            const img = document.createElement('img');
+            img.src = item.iconSrc || item.src;
+            const scale = item.iconScale ?? item.scale ?? 2;
+            const size = Math.max(14, Math.min(32, 24 * scale));
+            img.style.width = `${size}px`;
+            img.style.height = `${size}px`;
+            img.style.objectFit = 'contain';
+            swatch.appendChild(img);
+        } else {
+            // Default circle fallback
             const circle = document.createElement('span');
             const size = item.pointRadius ? Math.min(18, Math.max(4, item.pointRadius)) : 8;
             circle.style.display = 'inline-block';
@@ -52,21 +62,22 @@ export function buildLegendDiv(legendItems) {
             circle.style.borderRadius = '50%';
             circle.style.border = `1px solid ${item.strokeColor || 'transparent'}`;
             swatch.appendChild(circle);
-        } else {
-            swatch.style.background = item.color;
-            if (item.strokeColor) swatch.style.border = `1px solid ${item.strokeColor}`;
         }
-        
-        const lbl = document.createElement('span');
-        lbl.className = 'ls-legend-label';
-        lbl.textContent = item.label;
-        
-        row.appendChild(swatch);
-        row.appendChild(lbl);
-        legendDiv.appendChild(row);
-    });
+    } else {
+        swatch.style.background = item.color;
+        if (item.strokeColor) swatch.style.border = `1px solid ${item.strokeColor}`;
+    }
     
-    return legendDiv;
+    const lbl = document.createElement('span');
+    lbl.className = 'ls-legend-label';
+    lbl.textContent = item.label;
+    
+    row.appendChild(swatch);
+    row.appendChild(lbl);
+    legendDiv.appendChild(row);
+});
+
+return legendDiv;
 }
 
 // ==========================

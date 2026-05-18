@@ -468,3 +468,9 @@ Attribute Popup
     width: 100px;  /* adjust size */
     height: auto;
 }
+
+.lib-swatch-icon {
+  margin-right: 8px;
+  vertical-align: middle;
+  display: inline-block;
+}
