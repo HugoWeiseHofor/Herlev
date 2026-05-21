@@ -779,14 +779,13 @@ export function addClassedIconLayer(map, config, projection) {
   const source = makeSafeVectorSource(config, projection, 'addClassedIconLayer');
   if (!source) return null;
 
-  // Cache Icon instances to avoid recreating them per render frame
   const iconCache = new Map();
   function getIcon(classCfg) {
     if (!iconCache.has(classCfg.src)) {
       iconCache.set(classCfg.src, new ol.style.Icon({
         src: classCfg.src,
         scale: classCfg.scale ?? 1,
-        anchor: classCfg.anchor ?? [0.5, 1], // bottom-center by default
+        anchor: classCfg.anchor ?? [0.5, 1],
         anchorXUnits: 'fraction',
         anchorYUnits: 'fraction',
         opacity: classCfg.opacity ?? 1
@@ -799,34 +798,62 @@ export function addClassedIconLayer(map, config, projection) {
   const defaultCfg = config.default_class || null;
   classes.forEach(c => { lookup[c.value] = c; });
 
-  function styleFunction(feature, resolution) {
-    const val = feature.get(config.field);
-    const cls = lookup[val] ?? defaultCfg;
-    if (!cls) return null;
-    const base = new ol.style.Style({ image: getIcon(cls) });
-    return withLabel(base, config, feature, resolution);
-}
+  // 1️⃣ Create layer first
+  const layer = makeVectorLayer(source, config, null);
+  
+  // 2️⃣ Initialize active set for toggling
+  layer.set('_activeCategories', new Set(classes.map(c => String(c.value))));
 
-  const layer = makeVectorLayer(source, config, styleFunction);
+  // 3️⃣ Style function with category filtering
+  function styleFunction(feature, resolution) {
+    try {
+      const activeSet = layer.get('_activeCategories');
+      if (activeSet) {
+        const featureVal = String(feature.get(config.field) ?? '');
+        if (!activeSet.has(featureVal)) return null;
+      }
+
+      const val = feature.get(config.field);
+      const cls = lookup[val] ?? defaultCfg;
+      if (!cls) return null;
+      
+      const base = new ol.style.Style({ image: getIcon(cls) });
+      return withLabel(base, config, feature, resolution);
+    } catch (err) {
+      console.error('[addClassedIconLayer] Style error:', err, feature);
+      return null;
+    }
+  }
+
+  layer.setStyle(styleFunction);
   attachPopupMeta(layer, config);
   map.addLayer(layer);
 
-  // Legend items tailored for images
-const legendItems = classes
+  // 4️⃣ Legend items for the actual legend renderer
+  const legendItems = classes
     .filter(c => c.show_legend !== false)
     .map(c => ({
-        src: c.src,          
-        iconSrc: c.src,       
-        scale: c.scale ?? 2,
-        iconScale: c.scale ?? 2,
-        label: c.label ?? c.value,
-        type: 'image',       
-        point: true,
-        color: '#888888',     
-        strokeColor: 'transparent'
+      type: 'image',
+      src: c.src,
+      iconSrc: c.src,
+      image: c.src,           
+      scale: c.scale ?? 2,
+      label: c.label ?? c.value,
+      point: true
     }));
 
-  registerAndSetup(layer, config, legendItems, 'Classed Icon Layer');
+  const categoriesForUI = classes.map(c => ({
+    value: c.value,
+    label: c.label || c.value,
+    type: 'image',
+    image: c.src,             
+    src: c.src,
+    show_legend: c.show_legend
+  }));
+
+  // Pass both. The 5th arg now carries icon metadata so it won't fall back to circles.
+  registerAndSetup(layer, config, legendItems, 'Classed Icon Layer', categoriesForUI);
+  
   return { layer, source };
 }
 

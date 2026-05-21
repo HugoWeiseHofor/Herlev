@@ -228,21 +228,32 @@ export function registerLayer(layer, title, type = 'overlay', legendItems = [], 
                 line.style.borderRadius = '1px';
                 swatch.appendChild(line);
             } else if (geomType === 'point') {
-                // Point swatch
-                swatch.style.background = 'transparent';
-                swatch.style.border = 'none';
-                swatch.style.display = 'flex';
-                swatch.style.alignItems = 'center';
-                swatch.style.justifyContent = 'center';
-                
-                const circle = document.createElement('span');
-                circle.style.display = 'inline-block';
-                circle.style.width = '8px';
-                circle.style.height = '8px';
-                circle.style.background = cat.fill_color || '#000';
-                circle.style.borderRadius = '50%';
-                circle.style.border = `1px solid ${cat.stroke_color || 'transparent'}`;
-                swatch.appendChild(circle);
+                    swatch.style.background = 'transparent';
+                    swatch.style.border = 'none';
+                    swatch.style.display = 'flex';
+                    swatch.style.alignItems = 'center';
+                    swatch.style.justifyContent = 'center';
+
+                    const iconSrc = cat.src || cat.image || cat.iconSrc;
+                    if (iconSrc) {
+                        const img = document.createElement('img');
+                        img.src = iconSrc;
+                        const scale = cat.scale ?? 1;
+                        const size = Math.max(14, Math.min(32, 24 * scale));
+                        img.style.width = `${size}px`;
+                        img.style.height = `${size}px`;
+                        img.style.objectFit = 'contain';
+                        swatch.appendChild(img);
+                    } else {
+                        const circle = document.createElement('span');
+                        circle.style.display = 'inline-block';
+                        circle.style.width = '8px';
+                        circle.style.height = '8px';
+                        circle.style.background = cat.fill_color || '#000';
+                        circle.style.borderRadius = '50%';
+                        circle.style.border = `1px solid ${cat.stroke_color || 'transparent'}`;
+                        swatch.appendChild(circle);
+                    }
             } else {
                 // Polygon swatch
                 swatch.style.background = cat.fill_color || '#000';
