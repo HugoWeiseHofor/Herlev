@@ -474,3 +474,17 @@ Attribute Popup
   vertical-align: middle;
   display: inline-block;
 }
+
+.ls-category-toggles {
+    margin-top: 4px;
+    padding-left: 12px;
+    border-left: 2px solid #e0e0e0;
+}
+.ls-cat-input {
+    cursor: pointer;
+    accent-color: #2c5f8a;
+}
+.ls-category-toggles label {
+    cursor: pointer;
+    user-select: none;
+}

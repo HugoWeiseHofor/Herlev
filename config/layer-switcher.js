@@ -118,73 +118,166 @@ export function syncGroupCheckbox(groupContent) {
     }
 }
 
-export function registerLayer(layer, title, type = 'overlay', legendItems = [], container = null, hidden = false) {
+export function registerLayer(layer, title, type = 'overlay', legendItems = [], container = null, hidden = false, categories = null) {
     layer.set('title', title);
     layer.set('type', type);
     layer.set('hidden', hidden);
-    
-     layer.set('legendItems', legendItems); 
+    layer.set('legendItems', legendItems);
 
-    // Skip UI creation if hidden
     if (hidden) return { layer };
-    
+
     if (!container) {
         container = type === 'base'
             ? document.getElementById('ls-base-layers')
             : document.getElementById('ls-overlay-layers');
     }
-    
+
     const wrapper = document.createElement('div');
     wrapper.className = 'ls-layer-item';
-    
+
     const headerRow = document.createElement('div');
     headerRow.className = 'ls-layer-header';
-    
+
     const input = document.createElement('input');
     input.type = type === 'base' ? 'radio' : 'checkbox';
     input.name = type === 'base' ? 'baseLayer' : title;
     input.checked = layer.getVisible();
     input.className = 'ls-input';
-    
+
     input.addEventListener('change', () => {
         if (type === 'base') {
             baseLayers.forEach(l => l.setVisible(l === layer));
         } else {
             layer.setVisible(input.checked);
         }
-        // Sync parent group checkbox if this layer is in a group
         const groupContent = container.closest('.ls-group-content');
         if (groupContent && type !== 'base') {
             syncGroupCheckbox(groupContent);
         }
     });
 
-    // If layer is initially visible, sync the group immediately after appending
-    // (deferred so the wrapper is in the DOM first)
-    
     layer.on('change:visible', () => { input.checked = layer.getVisible(); });
-    
+
     const labelEl = document.createElement('label');
     labelEl.className = 'ls-label';
     labelEl.textContent = title;
-    
+
     headerRow.appendChild(input);
     headerRow.appendChild(labelEl);
     wrapper.appendChild(headerRow);
-    
-    const legendDiv = buildLegendDiv(legendItems);
-    if (legendDiv) wrapper.appendChild(legendDiv);
-    
+
+    // 🆕 Category sub-toggles WITH embedded legend swatches
+    if (categories && categories.length > 0) {
+        if (!layer.get('_activeCategories')) {
+            layer.set('_activeCategories', new Set(categories.map(c => String(c.value))));
+        }
+
+        const catContainer = document.createElement('div');
+        catContainer.className = 'ls-category-toggles';
+        catContainer.style.marginTop = '4px';
+        catContainer.style.paddingLeft = '16px';
+        catContainer.style.borderLeft = '2px solid #ccc';
+
+        categories.forEach((cat, idx) => {
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.alignItems = 'center';
+            row.style.marginBottom = '2px';
+            row.style.fontSize = '0.85em';
+
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.checked = true;
+            cb.className = 'ls-input ls-cat-input';
+
+            cb.addEventListener('change', () => {
+                const activeSet = layer.get('_activeCategories');
+                const val = String(cat.value);
+                if (cb.checked) activeSet.add(val);
+                else activeSet.delete(val);
+                layer.changed();
+            });
+
+            // 🎨 Create swatch for this category
+            const swatch = document.createElement('span');
+            swatch.style.display = 'inline-block';
+            swatch.style.width = '16px';
+            swatch.style.height = '16px';
+            swatch.style.marginLeft = '6px';
+            swatch.style.marginRight = '6px';
+            swatch.style.flexShrink = '0';
+
+            // Determine geometry type from layer or config
+            const geomType = layer.get('geometryType') || 
+                           (legendItems[idx]?.line ? 'line' : 
+                            legendItems[idx]?.point ? 'point' : 'polygon');
+
+            if (geomType === 'line') {
+                // Line swatch
+                swatch.style.background = 'transparent';
+                swatch.style.border = 'none';
+                swatch.style.display = 'flex';
+                swatch.style.alignItems = 'center';
+                swatch.style.justifyContent = 'center';
+                
+                const line = document.createElement('span');
+                line.style.display = 'block';
+                line.style.width = '16px';
+                line.style.height = '3px';
+                line.style.background = cat.stroke_color || cat.fill_color || '#000';
+                line.style.borderRadius = '1px';
+                swatch.appendChild(line);
+            } else if (geomType === 'point') {
+                // Point swatch
+                swatch.style.background = 'transparent';
+                swatch.style.border = 'none';
+                swatch.style.display = 'flex';
+                swatch.style.alignItems = 'center';
+                swatch.style.justifyContent = 'center';
+                
+                const circle = document.createElement('span');
+                circle.style.display = 'inline-block';
+                circle.style.width = '8px';
+                circle.style.height = '8px';
+                circle.style.background = cat.fill_color || '#000';
+                circle.style.borderRadius = '50%';
+                circle.style.border = `1px solid ${cat.stroke_color || 'transparent'}`;
+                swatch.appendChild(circle);
+            } else {
+                // Polygon swatch
+                swatch.style.background = cat.fill_color || '#000';
+                swatch.style.border = `1px solid ${cat.stroke_color || 'rgba(0,0,0,0.2)'}`;
+            }
+
+            const lbl = document.createElement('label');
+            lbl.textContent = cat.label || cat.value;
+            lbl.style.marginLeft = '4px';
+            lbl.style.cursor = 'pointer';
+            lbl.style.userSelect = 'none';
+
+            row.appendChild(cb);
+            row.appendChild(swatch);
+            row.appendChild(lbl);
+            catContainer.appendChild(row);
+        });
+        wrapper.appendChild(catContainer);
+        
+        // ✅ SKIP traditional legend when categories are present
+    } else {
+        // ✅ Show legend for non-categorized layers
+        const legendDiv = buildLegendDiv(legendItems);
+        if (legendDiv) wrapper.appendChild(legendDiv);
+    }
+
     container.appendChild(wrapper);
 
-    // Sync parent group if layer starts visible
     if (input.checked && type !== 'base') {
         const groupContent = container.closest('.ls-group-content');
         if (groupContent) syncGroupCheckbox(groupContent);
     }
 
     if (type === 'base') baseLayers.push(layer);
-    
+
     return { layer };
 }
 
