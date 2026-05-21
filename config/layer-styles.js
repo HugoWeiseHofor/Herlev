@@ -735,7 +735,7 @@ export const styles = {
             color: '#1a1a1a',         
             outline_color: '#ffffff',
             placement: 'line',
-            max_resolution: 1       
+            max_resolution: 0.5       
      },
     },
 

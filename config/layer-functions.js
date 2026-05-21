@@ -507,7 +507,6 @@ export function addCategorizedLayer(map, config, projection) {
     // 3️⃣ Define style function AFTER layer exists so it captures `layer` in closure
     function styleFunction(feature, resolution) {
         try {
-            // NEW: Check if category is toggled on
             const activeSet = layer.get('_activeCategories');
             if (activeSet) {
                 const featureVal = String(feature.get(config.field) ?? '');
@@ -518,7 +517,12 @@ export function addCategorizedLayer(map, config, projection) {
             const fillColor = cat?.fill ?? defaultFill;
             const strokeColor = cat?.stroke ?? cat?.fill ?? defaultStroke;
             const geomType = feature.getGeometry()?.getType();
-            return withLabel(makeGeomStyle(config, geomType, fillColor, strokeColor, strokeColor, cat?.strokeWidth), config, feature);
+            return withLabel(
+            makeGeomStyle(config, geomType, fillColor, strokeColor, strokeColor, cat?.strokeWidth),
+            config,
+            feature,
+            resolution
+        );
         } catch (err) {
             console.error('[addCategorizedLayer] Style error:', err, feature);
             return null;
