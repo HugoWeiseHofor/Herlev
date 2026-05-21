@@ -143,16 +143,17 @@ function attachPopupMeta(layer, config) {
   if (config.attributeTitleField) layer.set('attributeTitleField', config.attributeTitleField);
 }
 
-function registerAndSetup(layer, config, legendItems, defaultTitle) {
-  setupInfoBox(layer, config);
-  registerLayer(
-    layer,
-    config.title || defaultTitle,
-    'overlay',
-    legendItems,
-    config.group_container || null,
-    config.hidden || false
-  );
+function registerAndSetup(layer, config, legendItems, defaultTitle, categories = null) {
+    setupInfoBox(layer, config);
+    registerLayer(
+        layer,
+        config.title || defaultTitle,
+        'overlay',
+        legendItems,
+        config.group_container || null,
+        config.hidden || false,
+        categories // <-- NEW 7th parameter
+    );
 }
 
 // ── Geometry-type detector ────────────────────────────────────
@@ -481,13 +482,11 @@ export function addSingleColorLayer(map, config, projection) {
   registerAndSetup(layer, config, [item], 'Overlay Layer');
   return { layer, source };
 }
-
 // ── addCategorizedLayer ──────────────────────────────────────
 export function addCategorizedLayer(map, config, projection) {
     const defaultFill = resolveColor(config.default_fill_color || '#cccccc', config.fill_alpha);
     const defaultStroke = resolveColor(config.stroke_color || '#000000');
     const categoryMap = {};
-    
     (config.categories || []).forEach(cat => {
         categoryMap[cat.value] = { 
             fill: resolveColor(cat.fill_color, cat.fill_alpha), 
@@ -496,54 +495,69 @@ export function addCategorizedLayer(map, config, projection) {
         };
     });
 
+    const source = makeSafeVectorSource(config, projection, 'addCategorizedLayer');
+    if (!source) return null;
+
+    // 1️⃣ Create layer first (style will be set next)
+    const layer = makeVectorLayer(source, config, null);
+    
+    // 2️⃣ Initialize active category set on the layer
+    layer.set('_activeCategories', new Set(config.categories.map(c => String(c.value))));
+
+    // 3️⃣ Define style function AFTER layer exists so it captures `layer` in closure
     function styleFunction(feature, resolution) {
-    try {
-        const cat = categoryMap[feature.get(config.field)];
-        const fillColor = cat?.fill ?? defaultFill;
-        const strokeColor = cat?.stroke ?? cat?.fill ?? defaultStroke;
-        const geomType = feature.getGeometry()?.getType();
-        return withLabel(makeGeomStyle(config, geomType, fillColor, strokeColor, strokeColor, cat?.strokeWidth), config, feature);
+        try {
+            // NEW: Check if category is toggled on
+            const activeSet = layer.get('_activeCategories');
+            if (activeSet) {
+                const featureVal = String(feature.get(config.field) ?? '');
+                if (!activeSet.has(featureVal)) return null; // Hide feature
+            }
+
+            const cat = categoryMap[feature.get(config.field)];
+            const fillColor = cat?.fill ?? defaultFill;
+            const strokeColor = cat?.stroke ?? cat?.fill ?? defaultStroke;
+            const geomType = feature.getGeometry()?.getType();
+            return withLabel(makeGeomStyle(config, geomType, fillColor, strokeColor, strokeColor, cat?.strokeWidth), config, feature);
         } catch (err) {
             console.error('[addCategorizedLayer] Style error:', err, feature);
             return null;
         }
-}
+    }
 
-  const source = makeSafeVectorSource(config, projection, 'addCategorizedLayer');
-  if (!source) return null;
+    // 4️⃣ Apply style
+    layer.setStyle(styleFunction);
 
-  const layer = makeVectorLayer(source, config, styleFunction);
-  attachPopupMeta(layer, config);
-  map.addLayer(layer);
+    attachPopupMeta(layer, config);
+    map.addLayer(layer);
 
-  function buildLegendItems(geomHint) {
-    if (config.legend_single) return [];
-    return (config.categories || []).map(cat => {
-      const fill = resolveColor(cat.fill_color, cat.fill_alpha);
-      const stroke = cat.stroke_color ? resolveColor(cat.stroke_color) : fill;
-      const label = cat.label || cat.value;
-      return legendItemForGeom(geomHint, geomHint === 'line' ? stroke : fill, stroke, label, config);
-    });
-  }
+    function buildLegendItems(geomHint) {
+        if (config.legend_single) return [];
+        return (config.categories || []).map(cat => {
+            const fill = resolveColor(cat.fill_color, cat.fill_alpha);
+            const stroke = cat.stroke_color ? resolveColor(cat.stroke_color) : fill;
+            const label = cat.label || cat.value;
+            return legendItemForGeom(geomHint, geomHint === 'line' ? stroke : fill, stroke, label, config);
+        });
+    }
 
-  const configHint = config.geometry_type?.toLowerCase() || null;
-  function registerWithHint(features) {
-    const hint = configHint || detectDominantGeomType(features) || 'polygon';
-    const items = buildLegendItems(hint);
-    registerAndSetup(layer, config, items, 'Categorized Layer');
-  }
+    const configHint = config.geometry_type?.toLowerCase() || null;
+    function registerWithHint(features) {
+        const hint = configHint || detectDominantGeomType(features) || 'polygon';
+        const items = buildLegendItems(hint);
+        registerAndSetup(layer, config, items, 'Categorized Layer', config.categories); // <-- Pass categories
+    }
 
-  const loaded = source.getFeatures();
-  if (configHint || loaded.length > 0 || source.getState() === 'ready') {
-    registerWithHint(loaded);
-  } else {
-    registerAndSetup(layer, config, [], 'Categorized Layer');
-    source.once('change', () => {
-      if (source.getState() === 'ready') registerWithHint(source.getFeatures());
-    });
-  }
-
-  return { layer, source };
+    const loaded = source.getFeatures();
+    if (configHint || loaded.length > 0 || source.getState() === 'ready') {
+        registerWithHint(loaded);
+    } else {
+        registerAndSetup(layer, config, [], 'Categorized Layer', config.categories); // <-- Pass categories
+        source.once('change', () => {
+            if (source.getState() === 'ready') registerWithHint(source.getFeatures());
+        });
+    }
+    return { layer, source };
 }
 
 // ── addPieChartLayer ─────────────────────────────────────────
