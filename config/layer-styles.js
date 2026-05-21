@@ -842,4 +842,19 @@ herlev_graense: {
         fill_alpha: 0.85, z_index: 1,
     },
 
+MIKEResults: {
+        type: 'classedPoint',
+        title: 'T1 - Opstuvninger til over terræn [m]',
+        field: 'Maximum',
+        stroke_color: '#0e0d0d', stroke_width: 1,
+        breaks: [0, 0.1, 10], 
+        class_colors:  ['#dfab1e','#e71c0e'],
+        legend_decimal_places: 1,
+        radius: 4, fill_alpha: 0.85, z_index: 1,
+        attributeTitleField: 'attributter',
+        attributes: [
+            { field: 'Maximum',   label: 'Trykniveau (meter over terræn)' },
+        ]
+    },
+
 };

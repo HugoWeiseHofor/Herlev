@@ -189,6 +189,13 @@ export function addAllLayers(map, projection, fns) {
 
     addLayer( { ...styles.projekter, folder_destination: 'GeoJSON-data/projekter.geojson', visible: false, group_container: grp_projekter },);
 
+    // ----------------------------------------------------------------
+    // MIKE+ statusresultater (flood node - opstuvninger til over terræn) 
+    // ----------------------------------------------------------------
+    const grp_MIKEResults   = createGroup({ title: 'M+ statusresultater, Opstuvninger til over terræn', fold: 'close' });
+
+    addLayer( { ...styles.MIKEResults, folder_destination: 'GeoJSON-data/T1_Opstuvning.geojson', visible: false, group_container: grp_MIKEResults },);
+
 
     // ----------------------------------------------------------------
     // Omrids (hidden background outline)
