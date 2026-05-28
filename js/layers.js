@@ -82,17 +82,6 @@ export function addAllLayers(map, projection, fns) {
     addLayer({ ...styles.streams_buffer_100m,folder_destination: 'GeoJSON-data/Vandloeb_100m_buffer.geojson',visible: false, group_container: grp_vandloeb },);
 
     // ----------------------------------------------------------------
-    // Skadesomkostninger
-    // ----------------------------------------------------------------
-
-    const grp_skadesomkostninger = createGroup({ title: 'Skadesberegninger', fold: 'close', depth: 1, container: grp_TGV });
-
-    const { layer: lyr_bygninger_indledende, source: jsonSource_bygninger_indledende } =
-        addLayer({ ...styles.indledende_damage_cost, folder_destination: 'GeoJSON-data/Bygninger_Skadesberegninger_Herlev.geojson', visible: false, group_container: grp_skadesomkostninger },);
-    const { layer: lyr_bygninger_sandsynlig, source: jsonSource_bygninger_sandsynlig } =
-        addLayer({ ...styles.sandsynlig_damage_cost, folder_destination: 'GeoJSON-data/Bygninger_Skadesberegninger_Herlev.geojson', visible: false, group_container: grp_skadesomkostninger },);
-    
-    // ----------------------------------------------------------------
     // Herlev specifikt
     // ----------------------------------------------------------------
 
