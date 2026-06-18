@@ -320,7 +320,6 @@ export const styles = {
     groundwater_1_2m_s:  {type: 'singleColor', title: '1-2m',  fill_color: '#78b0d6', stroke_color: 'rgba(0,0,0,0)', stroke_width: 0, fill_alpha: 0.85, z_index: 2 },
     groundwater_2_3m_s:  {type: 'singleColor', title: '2-3m',  fill_color: '#c7dfee', stroke_color: 'rgba(0,0,0,0)', stroke_width: 0, fill_alpha: 0.85, z_index: 2 },
     groundwater_3_7m_s:  {type: 'singleColor', title: '3-7m',  fill_color: '#f9fcff', stroke_color: 'rgba(0,0,0,0)', stroke_width: 0, fill_alpha: 0.85, z_index: 2 },
-
     // ================================================================
     // HIP – grundvandsdybde vinter
     // ================================================================
@@ -328,6 +327,46 @@ export const styles = {
     groundwater_1_2m_w:  {type: 'singleColor', title: '1-2m',  fill_color: '#78b0d6', stroke_color: 'rgba(0,0,0,0)', stroke_width: 0, fill_alpha: 0.85, z_index: 2 },
     groundwater_2_3m_w:  {type: 'singleColor', title: '2-3m',  fill_color: '#c7dfee', stroke_color: 'rgba(0,0,0,0)', stroke_width: 0, fill_alpha: 0.85, z_index: 2 },
     groundwater_3_7m_w:  {type: 'singleColor', title: '3-7m',  fill_color: '#f9fcff', stroke_color: 'rgba(0,0,0,0)', stroke_width: 0, fill_alpha: 0.85, z_index: 2 },
+
+    // ================================================================
+    // HIP – ny
+    // ================================================================
+
+    hip_sommer:{
+        type: 'categorized',
+        title: 'Dybde til terrænnært grundvand, sommer, 50. percentil (den mest sandsynlige dybde), 10m-grid, 1991-2025',
+        field: 'DN',
+        categories: [
+            { value: '1', fill_color: '#1515e9', fill_alpha: 0.85, label: '< 0,5 m' },
+            { value: '2', fill_color: '#16b8ea', fill_alpha: 0.85, label: '0,5-1 m' },
+            { value: '3', fill_color: '#a8d1ff', fill_alpha: 0.85, label: '1-2 m' },
+            { value: '4', fill_color: '#dfdfdf', fill_alpha: 0.85, label: '2-3 m' },
+            { value: '5', fill_color: '#ffffc1', fill_alpha: 0.85, label: '3-4 m' },
+            { value: '6', fill_color: '#fffd08', fill_alpha: 0.85, label: '4-5 m' },
+            { value: '7', fill_color: '#ff8800', fill_alpha: 0.85, label: '5-10 m' },
+            { value: '8', fill_color: '#a11113', fill_alpha: 0.85, label: '> 10 m' },
+        ],
+        default_fill_color: '#99999900', stroke_color: '#ffffff00', stroke_width: 0,
+        fill_alpha: 0.85, z_index: 1
+},
+
+    hip_vinter:{
+        type: 'categorized',
+        title: 'Dybde til terrænnært grundvand, vinter, 50. percentil (den mest sandsynlige dybde), 10m-grid, 1991-2025',
+        field: 'DN',
+        categories: [
+            { value: '1', fill_color: '#1515e9', fill_alpha: 0.85, label: '< 0,5 m' },
+            { value: '2', fill_color: '#16b8ea', fill_alpha: 0.85, label: '0,5-1 m' },
+            { value: '3', fill_color: '#a8d1ff', fill_alpha: 0.85, label: '1-2 m' },
+            { value: '4', fill_color: '#dfdfdf', fill_alpha: 0.85, label: '2-3 m' },
+            { value: '5', fill_color: '#ffffc1', fill_alpha: 0.85, label: '3-4 m' },
+            { value: '6', fill_color: '#fffd08', fill_alpha: 0.85, label: '4-5 m' },
+            { value: '7', fill_color: '#ff8800', fill_alpha: 0.85, label: '5-10 m' },
+            { value: '8', fill_color: '#a11113', fill_alpha: 0.85, label: '> 10 m' },
+        ],
+        default_fill_color: '#99999900', stroke_color: '#ffffff00', stroke_width: 0,
+        fill_alpha: 0.85, z_index: 1
+},
 
     // ================================================================
     // Middelvarigheder (HIP)
@@ -768,17 +807,17 @@ export const styles = {
         stroke_width: 3,
         classes: [
             { value: 'Overløb',          src: 'images/overloeb.png',         scale: 1.2, label: 'Overløb' },
-            { value: 'Fordelerbygværk',  src: 'images/fordelerbygvaerk.png', scale: 0.4, label: 'Fordelerbygværk' },
-            { value: 'Nedsivningsanlæg', src: 'images/nedsivningsanlaeg.png',scale: 0.4, label: 'Nedsivningsanlæg' },
-            { value: 'Målerbygværk',     src: 'images/maalerbygvaerk.png',   scale: 0.4, label: 'Målerbygværk' },
-            { value: 'Regulering',       src: 'images/Regulering.png',       scale: 0.4, label: 'Regulering' },
-            { value: 'Renseanlæg',       src: 'images/Renseanlaeg.png',      scale: 0.4, label: 'Renseanlæg' },
-            { value: 'Sandfang',         src: 'images/Sandfang.png',         scale: 0.8, label: 'Sandfang' },
-            { value: 'Tank',             src: 'images/Tank.png',             scale: 0.4, label: 'Tank' },
+        //    { value: 'Fordelerbygværk',  src: 'images/fordelerbygvaerk.png', scale: 0.4, label: 'Fordelerbygværk' },
+        //    { value: 'Nedsivningsanlæg', src: 'images/nedsivningsanlaeg.png',scale: 0.4, label: 'Nedsivningsanlæg' },
+        //    { value: 'Målerbygværk',     src: 'images/maalerbygvaerk.png',   scale: 0.4, label: 'Målerbygværk' },
+        //    { value: 'Regulering',       src: 'images/Regulering.png',       scale: 0.4, label: 'Regulering' },
+        //    { value: 'Renseanlæg',       src: 'images/Renseanlaeg.png',      scale: 0.4, label: 'Renseanlæg' },
+        //    { value: 'Sandfang',         src: 'images/Sandfang.png',         scale: 0.8, label: 'Sandfang' },
+        //    { value: 'Tank',             src: 'images/Tank.png',             scale: 0.4, label: 'Tank' },
             { value: 'Udløb',            src: 'images/udloeb.png',           scale: 0.8, label: 'Udløb' },
-            { value: 'Udskiller',        src: 'images/Udskiller.png',        scale: 0.4, label: 'Udskiller' },
-            { value: 'Bassin',           src: 'images/bassin.png',           scale: 0.4, label: 'Bassin' },
-            { value: 'Pumpestation',     src: 'images/pumpestation.png',     scale: 1,   label: 'Pumpestation' },
+        //    { value: 'Udskiller',        src: 'images/Udskiller.png',        scale: 0.4, label: 'Udskiller' },
+        //    { value: 'Bassin',           src: 'images/bassin.png',           scale: 0.4, label: 'Bassin' },
+        //    { value: 'Pumpestation',     src: 'images/pumpestation.png',     scale: 1,   label: 'Pumpestation' },
         ],
         default_fill_color: '#999999', stroke_color: '#ffffff00', stroke_width: 1,
         fill_alpha: 0.85, z_index: 1,
@@ -792,6 +831,30 @@ export const styles = {
             offset_y: 5,       
      },
     },
+
+
+PULS:{
+        type: 'singleColor',
+        title: 'Regnbetingede udløb',
+        point_style: 'circle',   
+        point_radius: 4,
+        fill_color: '#001135',
+        fill_alpha: 0.9,
+        stroke_color: '#ffffff',
+        stroke_width: 1,
+        geometry_type: 'point',  
+        z_index: 2,
+        attributeTitleField: "attributter",
+            attributes: [
+        { field: "LatestDischargeYear", label: "Seneste indberetnings år (konkret år)" },        
+        { field: "LatestDischargeVolume", label: "Udledningsmængde  konkret år (m3)" },
+        { field: "LatestDischargeOverflows", label: "Antal udledninger konkret år (n)" },
+        { field: "LatestNormalDischargeYear", label: "Seneste indberetnings år (normal år)" },        
+        { field: "LatestNormalDischargeVolume", label: "Udledningsmængde normal år (m3)" },
+        { field: "LatestNormalDischargeOverflows", label: "Antal udledninger normal år (n)" },
+    ],
+    },
+
 
     stik: {
         type: 'singleColor',

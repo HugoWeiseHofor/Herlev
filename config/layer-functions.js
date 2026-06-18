@@ -56,72 +56,133 @@ function parseNumeric(v) {
 }
 
 // ── GeoJSON source factory ───────────────────────────────────
+// ── GeoJSON / WFS source factory ───────────────────────────────────
 function makeSafeVectorSource(config, projection, tag) {
-  const encodedUrl = encodeUrl(config.folder_destination);
-  if (!encodedUrl) {
-    console.error(`[${tag}] config.folder_destination is required`);
-    return null;
-  }
-  const baseFormat = new ol.format.GeoJSON({
-    dataProjection: config.data_projection || 'EPSG:25832',
-    featureProjection: projection
-  });
+    // --- WFS Source Support ---
+    if (config.wfs_url && config.wfs_layer) {
+        const format = new ol.format.GeoJSON({
+            dataProjection: config.data_projection || 'EPSG:25832',
+            featureProjection: projection
+        });
+        
+        const source = new ol.source.Vector({
+            format: format,
+            loader: function(extent, resolution, proj) {
+                // 1. Base URL (Notice we REMOVED the &bbox= parameter!)
+                let url = config.wfs_url + 
+                    '?service=WFS&' +
+                    'version=1.1.0&' + 
+                    'request=GetFeature&' +
+                    'typeName=' + config.wfs_layer + 
+                    '&outputFormat=application/json&' +
+                    'srsName=' + proj.getCode();
+                
+                // 2. GeoServer doesn't allow &bbox= and &CQL_FILTER= at the same time.
+                // We must inject the bounding box INTO the CQL filter using the BBOX() function.
+                const geomField = config.wfs_geom_field || 'the_geom'; // Defaults to 'the_geom' if not specified
+                const bboxCql = `BBOX(${geomField}, ${extent.join(',')}, '${proj.getCode()}')`;
+                
+                // Combine the BBOX with your custom filter
+                let finalCql = '';
+                if (config.wfs_cql_filter) {
+                    finalCql = `${bboxCql} AND (${config.wfs_cql_filter})`;
+                } else {
+                    finalCql = bboxCql;
+                }
+                
+                url += '&CQL_FILTER=' + encodeURIComponent(finalCql);
 
-  function sanitizeGeometry(geom) {
-    if (!geom?.type) return null;
-    switch (geom.type) {
-      case 'MultiLineString':
-        if (!Array.isArray(geom.coordinates) || geom.coordinates.length === 0) return null;
-        geom.coordinates = geom.coordinates.filter(l => Array.isArray(l) && l.length >= 2);
-        return geom.coordinates.length > 0 ? geom : null;
-      case 'LineString':
-        return Array.isArray(geom.coordinates) && geom.coordinates.length >= 2 ? geom : null;
-      case 'MultiPolygon':
-      case 'Polygon':
-        return Array.isArray(geom.coordinates) && geom.coordinates.length > 0 ? geom : null;
-      case 'MultiPoint':
-      case 'Point':
-        return Array.isArray(geom.coordinates) && geom.coordinates.length >= 2 ? geom : null;
-      default:
-        return geom;
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        return response.json();
+                    })
+                    .then(json => {
+                        const features = format.readFeatures(json);
+                        if (features.length > 0) {
+                            source.addFeatures(features);
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`[${tag}] Failed to load WFS:`, error);
+                        source.removeLoadedExtent(extent); // Crucial for retrying on pan/zoom
+                    });
+            },
+            strategy: function(extent, resolution) {
+                return [extent];
+            }
+        });
+        
+        return source;
     }
-  }
 
-  const safeFormat = {
-    readFeatures(rawSource, options) {
-      let json;
-      try { json = typeof rawSource === 'string' ? JSON.parse(rawSource) : rawSource; }
-      catch (e) { console.error(`[${tag}] Failed to parse GeoJSON:`, e); return []; }
-
-      const raw = json.type === 'FeatureCollection' ? json.features
-                : json.type === 'Feature'           ? [json]
-                : [];
-
-      const good = [];
-      for (const f of raw) {
-        const sanitized = sanitizeGeometry(f.geometry);
-        if (!sanitized) {
-          console.warn(`[${tag}] Skipping feature with empty/invalid geometry`, f.properties);
-          continue;
+    // --- Existing GeoJSON Source Support ---
+    const encodedUrl = encodeUrl(config.folder_destination);
+    if (!encodedUrl) {
+        console.error(`[${tag}] config.folder_destination or config.wfs_url is required`);
+        return null;
+    }
+    
+    const baseFormat = new ol.format.GeoJSON({
+        dataProjection: config.data_projection || 'EPSG:25832',
+        featureProjection: projection
+    });
+    
+    function sanitizeGeometry(geom) {
+        if (!geom?.type) return null;
+        switch (geom.type) {
+            case 'MultiLineString':
+                if (!Array.isArray(geom.coordinates) || geom.coordinates.length === 0) return null;
+                geom.coordinates = geom.coordinates.filter(l => Array.isArray(l) && l.length >= 2);
+                return geom.coordinates.length > 0 ? geom : null;
+            case 'LineString':
+                return Array.isArray(geom.coordinates) && geom.coordinates.length >= 2 ? geom : null;
+            case 'MultiPolygon':
+            case 'Polygon':
+                return Array.isArray(geom.coordinates) && geom.coordinates.length > 0 ? geom : null;
+            case 'MultiPoint':
+            case 'Point':
+                return Array.isArray(geom.coordinates) && geom.coordinates.length >= 2 ? geom : null;
+            default:
+                return geom;
         }
-        try {
-          good.push(...baseFormat.readFeatures(
-            { type: 'Feature', geometry: sanitized, properties: f.properties ?? {} },
-            options
-          ));
-        } catch (e) {
-          console.warn(`[${tag}] Skipping unparseable feature:`, e, f.properties);
-        }
-      }
-      return good;
-    },
-    readProjection(src) { return baseFormat.readProjection(src); },
-    getType() { return baseFormat.getType(); }
-  };
+    }
+    
+    const safeFormat = {
+        readFeatures(rawSource, options) {
+            let json;
+            try { json = typeof rawSource === 'string' ? JSON.parse(rawSource) : rawSource; }
+            catch (e) { console.error(`[${tag}] Failed to parse GeoJSON:`, e); return []; }
+            
+            const raw = json.type === 'FeatureCollection' ? json.features
+                      : json.type === 'Feature'           ? [json]
+                      : [];
 
-  const source = new ol.source.Vector({ url: encodedUrl, format: safeFormat });
-  source.on('error', e => console.error(`[${tag}] Failed to load "${config.folder_destination}":`, e));
-  return source;
+            const good = [];
+            for (const f of raw) {
+                const sanitized = sanitizeGeometry(f.geometry);
+                if (!sanitized) {
+                    console.warn(`[${tag}] Skipping feature with empty/invalid geometry`, f.properties);
+                    continue;
+                }
+                try {
+                    good.push(...baseFormat.readFeatures(
+                        { type: 'Feature', geometry: sanitized, properties: f.properties ?? {} },
+                        options
+                    ));
+                } catch (e) {
+                    console.warn(`[${tag}] Skipping unparseable feature:`, e, f.properties);
+                }
+            }
+            return good;
+        },
+        readProjection(src) { return baseFormat.readProjection(src); },
+        getType() { return baseFormat.getType(); }
+    };
+    
+    const source = new ol.source.Vector({ url: encodedUrl, format: safeFormat });
+    source.on('error', e => console.error(`[${tag}] Failed to load "${config.folder_destination}":`, e));
+    return source;
 }
 
 // ── Vector layer factory ─────────────────────────────────────
@@ -411,18 +472,29 @@ export function addThematicLayer(map, config, projection) {
     registerAndSetup(layer, config, legendItems, 'Thematic Layer');
   }
 
-  function applyFromFeatures(cb) {
-    if (source.getState() === 'ready') {
-      const range = scanFieldRange(source.getFeatures(), config.field);
-      if (range) cb(range.min, range.max);
-    } else {
-      source.once('change', () => {
-        if (source.getState() !== 'ready') return;
-        const range = scanFieldRange(source.getFeatures(), config.field);
-        if (range) cb(range.min, range.max);
-      });
+// Replace the old applyFromFeatures logic in those functions with this:
+function applyFromFeatures(cb) {
+    const tryApply = () => {
+        const features = source.getFeatures();
+        if (features.length > 0) {
+            const range = scanFieldRange(features, config.field);
+            if (range) {
+                cb(range.min, range.max);
+                return true; // Success
+            }
+        }
+        return false;
+    };
+
+    if (!tryApply()) {
+        // For dynamic sources like WFS, listen for the 'change' event when features are added
+        const listenerKey = source.on('change', () => {
+            if (tryApply()) {
+                ol.Observable.unByKey(listenerKey); // Stop listening once applied
+            }
+        });
     }
-  }
+}
 
   if (config.gradient) {
     const fixedMin = config.breaks?.[0] ?? null;

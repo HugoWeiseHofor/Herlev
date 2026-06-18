@@ -92,6 +92,7 @@ export function addAllLayers(map, projection, fns) {
     addLayer({ ...styles.erhvervskvarteret,  folder_destination: 'GeoJSON-data/Erhvervskvarteret.geojson', visible: false, group_container: grp_borgerhenvendelser },);
     addLayer({ ...styles.eventyrkvarteret,   folder_destination: 'GeoJSON-data/Eventyrkvarteret.geojson',  visible: false, group_container: grp_borgerhenvendelser },);
 
+ 
     // ----------------------------------------------------------------
     // Analyser og andre data
     // ----------------------------------------------------------------
@@ -171,12 +172,26 @@ export function addAllLayers(map, projection, fns) {
     addLayer( { ...styles.broende, folder_destination: 'GeoJSON-data/broende1.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.knuder, folder_destination: 'GeoJSON-data/knuder.geojson', visible: false, group_container: grp_Ledningssystem },);
     
+    addLayer({ 
+        ...styles.PULS,
+        wfs_url: 'https://pulsgeo.miljoeportal.dk/geoserver/wfs', 
+        wfs_layer: 'puls:Regnbetingedeudloeb', 
+        wfs_geom_field: 'Position',          
+        wfs_cql_filter: `Owner = 'HOFOR SPILDEVAND HERLEV A/S (CVR 30557107)' AND Closed = 'Aktivt'`,
+        data_projection: 'EPSG:25832', 
+        visible: false, 
+        group_container: grp_Ledningssystem 
+    });   
+
+
     // ----------------------------------------------------------------
     // Projekter 
     // ----------------------------------------------------------------
     const grp_projekter   = createGroup({ title: 'Projekter', fold: 'close' });
 
     addLayer( { ...styles.projekter, folder_destination: 'GeoJSON-data/projekter.geojson', visible: false, group_container: grp_projekter },);
+
+
 
     // ----------------------------------------------------------------
     // MIKE+ statusresultater (flood node - opstuvninger til over terræn) 
