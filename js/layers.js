@@ -183,6 +183,9 @@ export function addAllLayers(map, projection, fns) {
         group_container: grp_Ledningssystem 
     });   
 
+    addLayer( { ...styles.oplande, folder_destination: 'GeoJSON-data/oplande_2.geojson', visible: false, group_container: grp_Ledningssystem },);
+
+
 
     // ----------------------------------------------------------------
     // Projekter 

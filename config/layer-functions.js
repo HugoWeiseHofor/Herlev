@@ -54,6 +54,14 @@ function parseNumeric(v) {
   if (typeof v === 'string') v = parseFloat(v.trim().replace(',', '.'));
   return (v == null || isNaN(v)) ? null : v;
 }
+// ── Random color function ─────────────────────────────────────
+function randomColor(alpha = 1) {
+    const r = Math.floor(80 + Math.random() * 150);  // avoid too-dark colors
+    const g = Math.floor(80 + Math.random() * 150);
+    const b = Math.floor(80 + Math.random() * 150);
+    return `rgba(${r},${g},${b},${alpha})`;
+}
+
 
 // ── GeoJSON source factory ───────────────────────────────────
 // ── GeoJSON / WFS source factory ───────────────────────────────────
@@ -285,6 +293,30 @@ function scanFieldRange(features, field) {
   if (values.length === 0) return null;
   return { min: Math.min(...values), max: Math.max(...values) };
 }
+
+// Hash function
+function hashString(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+        h = (h << 5) - h + str.charCodeAt(i);
+        h |= 0; // Convert to 32bit int
+    }
+    return Math.abs(h);
+}
+
+// Deterministic color generator
+function deterministicColor(key, alpha = 0.85) {
+    const h = hashString(String(key));
+
+    // Spread values nicely across the color wheel
+    const r = 80 + (h % 150);          // 80–230
+    const g = 80 + ((h >> 3) % 150);   // 80–230
+    const b = 80 + ((h >> 6) % 150);   // 80–230
+
+    return `rgba(${r},${g},${b},${alpha})`;
+}
+
+
 
 // ── Break-based class index ───────────────────────────────────
 function getClassIndex(value, breaks, numClasses, clamp) {
@@ -560,12 +592,25 @@ export function addCategorizedLayer(map, config, projection) {
     const defaultStroke = resolveColor(config.stroke_color || '#000000');
     const categoryMap = {};
     (config.categories || []).forEach(cat => {
-        categoryMap[cat.value] = { 
-            fill: resolveColor(cat.fill_color, cat.fill_alpha), 
-            stroke: cat.stroke_color ? resolveColor(cat.stroke_color) : null,
-            strokeWidth: cat.stroke_width 
-        };
-    });
+    const fill = cat.fill_color
+        ? resolveColor(cat.fill_color, cat.fill_alpha)
+        : deterministicColor(cat.value, config.fill_alpha ?? 0.85);
+
+    const stroke = cat.stroke_color
+        ? resolveColor(cat.stroke_color)
+        : fill;
+
+    cat.fill_color = fill;
+    cat.stroke_color = stroke;
+
+    categoryMap[cat.value] = {
+        fill,
+        stroke,
+        strokeWidth: cat.stroke_width
+    };
+});
+
+
 
     const source = makeSafeVectorSource(config, projection, 'addCategorizedLayer');
     if (!source) return null;
@@ -573,8 +618,9 @@ export function addCategorizedLayer(map, config, projection) {
     // 1️⃣ Create layer first (style will be set next)
     const layer = makeVectorLayer(source, config, null);
     
-    // 2️⃣ Initialize active category set on the layer
-    layer.set('_activeCategories', new Set(config.categories.map(c => String(c.value))));
+    const categoryList = Array.isArray(config.categories) ? config.categories : [];
+    layer.set('_activeCategories', new Set(categoryList.map(c => String(c.value))));
+
 
     // 3️⃣ Define style function AFTER layer exists so it captures `layer` in closure
     function styleFunction(feature, resolution) {
