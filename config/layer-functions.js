@@ -997,6 +997,173 @@ export function addWMSLayer(map, config) {
   return { layer, source };
 }
 
+// ── addFlowDirectionLayer ────────────────────────────────────
+//
+// Draws directional arrow markers along line features.
+// Direction is derived from the geometry itself (start → end of each segment).
+//
+// Style config keys:
+//   arrow_color        – fill color of the arrowhead         (default: '#2060c0')
+//   arrow_stroke_color – outline color                       (default: '#ffffff')
+//   arrow_stroke_width – outline width in px                 (default: 1)
+//   arrow_radius       – arrowhead size in px                (default: 6)
+//   arrow_spacing      – px between arrows at zoom 1m/px     (default: 80)
+//   line_color         – line stroke color                   (default: same as arrow_color)
+//   line_width         – line stroke width in px             (default: 2)
+//   fill_alpha         – global opacity                      (default: 0.9)
+//
+export function addFlowDirectionLayer(map, config, projection) {
+    const arrowColor       = resolveColor(config.arrow_color       || '#2060c0', config.fill_alpha ?? 0.9);
+    const arrowStroke      = resolveColor(config.arrow_stroke_color || '#ffffff');
+    const arrowStrokeWidth = config.arrow_stroke_width ?? 1;
+    const arrowRadius      = config.arrow_radius   ?? 6;
+    const arrowSpacing     = config.arrow_spacing  ?? 80;   // screen-px between arrows
+    const lineColor        = resolveColor(config.line_color || config.arrow_color || '#2060c0', config.fill_alpha ?? 0.9);
+    const lineWidth        = config.line_width ?? 2;
+
+    // ── helpers ──────────────────────────────────────────────
+
+    // Return evenly-spaced sample points + bearings along a coordinate ring.
+    // Each entry: { coord, angle }  where angle is in radians (0 = north, CW).
+    function sampleLineString(coords, spacingMapUnits) {
+        const samples = [];
+        if (coords.length < 2) return samples;
+
+        // Accumulate segment lengths
+        const segLengths = [];
+        let totalLength = 0;
+        for (let i = 0; i < coords.length - 1; i++) {
+            const dx = coords[i + 1][0] - coords[i][0];
+            const dy = coords[i + 1][1] - coords[i][1];
+            const len = Math.sqrt(dx * dx + dy * dy);
+            segLengths.push(len);
+            totalLength += len;
+        }
+
+        if (totalLength < spacingMapUnits) {
+            // Line is shorter than one spacing – place one arrow at the midpoint
+            const mid = totalLength / 2;
+            return [interpolateAlongLine(coords, segLengths, mid)];
+        }
+
+        // Start half a spacing in so arrows feel centred per segment
+        let cursor = spacingMapUnits / 2;
+        while (cursor < totalLength) {
+            samples.push(interpolateAlongLine(coords, segLengths, cursor));
+            cursor += spacingMapUnits;
+        }
+        return samples;
+    }
+
+    // Walk along a polyline and return { coord, angle } at distance `dist`.
+    function interpolateAlongLine(coords, segLengths, dist) {
+        let remaining = dist;
+        for (let i = 0; i < segLengths.length; i++) {
+            if (remaining <= segLengths[i] || i === segLengths.length - 1) {
+                const t = segLengths[i] > 0 ? remaining / segLengths[i] : 0;
+                const x = coords[i][0] + t * (coords[i + 1][0] - coords[i][0]);
+                const y = coords[i][1] + t * (coords[i + 1][1] - coords[i][1]);
+                // Bearing: atan2 gives angle from east; we rotate to "north = 0, CW"
+                const dx = coords[i + 1][0] - coords[i][0];
+                const dy = coords[i + 1][1] - coords[i][1];
+                // ol coordinate system: Y increases northward, so angle from north:
+                const angle = Math.atan2(dx, dy); // radians, 0 = north, CW positive
+                return { coord: [x, y], angle };
+            }
+            remaining -= segLengths[i];
+        }
+        // Fallback: last point, last segment bearing
+        const last = coords.length - 1;
+        const dx = coords[last][0] - coords[last - 1][0];
+        const dy = coords[last][1] - coords[last - 1][1];
+        return { coord: coords[last], angle: Math.atan2(dx, dy) };
+    }
+
+    // ── arrowhead style factory (cached per angle) ────────────
+    // We cache styles keyed to 2-decimal-place angle strings to avoid
+    // creating thousands of style objects per render frame.
+    const arrowCache = new Map();
+    function getArrowStyle(angle, coord) {
+        const key = angle.toFixed(2);
+        let image = arrowCache.get(key);
+        if (!image) {
+            // A triangle pointing up (north) – rotated by `angle`
+            image = new ol.style.RegularShape({
+                points: 3,
+                radius: arrowRadius,
+                fill:   new ol.style.Fill({ color: arrowColor }),
+                stroke: new ol.style.Stroke({ color: arrowStroke, width: arrowStrokeWidth }),
+                angle:  0,         // triangle points up by default in OL
+                rotation: angle    // rotate to match flow direction
+            });
+            arrowCache.set(key, image);
+        }
+        return new ol.style.Style({
+            geometry: new ol.geom.Point(coord),
+            image
+        });
+    }
+
+    // ── main style function ───────────────────────────────────
+    function styleFunction(feature, resolution) {
+        const geom = feature.getGeometry();
+        if (!geom) return null;
+
+        const type = geom.getType();
+        const styles = [];
+
+        // 1. Base line stroke
+        styles.push(new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: lineColor,
+                width: lineWidth,
+                lineCap:  config.line_cap  || 'round',
+                lineJoin: config.line_join || 'round'
+            })
+        }));
+
+        // 2. Arrow markers
+        const spacingMapUnits = arrowSpacing * resolution; // convert screen-px → map units
+
+        function addArrowsForRing(coords) {
+            const samples = sampleLineString(coords, spacingMapUnits);
+            for (const s of samples) {
+                styles.push(getArrowStyle(s.angle, s.coord));
+            }
+        }
+
+        if (type === 'LineString') {
+            addArrowsForRing(geom.getCoordinates());
+        } else if (type === 'MultiLineString') {
+            for (const ring of geom.getCoordinates()) {
+                addArrowsForRing(ring);
+            }
+        }
+
+        // 3. Optional map label
+        const labelStyle = buildLabelStyle(config, feature, resolution);
+        if (labelStyle) {
+            styles.push(new ol.style.Style({ text: labelStyle }));
+        }
+
+        return styles;
+    }
+
+    // ── build layer ───────────────────────────────────────────
+    const source = makeSafeVectorSource(config, projection, 'addFlowDirectionLayer');
+    if (!source) return null;
+
+    const layer = makeVectorLayer(source, config, styleFunction);
+    attachPopupMeta(layer, config);
+    map.addLayer(layer);
+
+    // ── legend: a short line with an arrowhead swatch ─────────
+    const legendItems = [legendItemLine(lineColor, config.legend_label || '', lineWidth)];
+    registerAndSetup(layer, config, legendItems, 'Flow Direction Layer');
+
+    return { layer, source };
+}
+
 // ============================================================
 // SECTION 4 — Universal dispatcher
 // ============================================================

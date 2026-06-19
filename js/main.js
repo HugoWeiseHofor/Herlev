@@ -12,6 +12,7 @@ import {
     addGraduatedLineLayer,
     addClassedPointLayer,
     addClassedIconLayer,
+    addFlowDirectionLayer,
     addWMSLayer
 } from '../config/layer-functions.js';
 import { initPopup, showPopup, hidePopup } from '../config/popup.js';
@@ -31,33 +32,61 @@ const extent = [712943.56, 6178893.77, 717233.88, 6184484.54];
 const view = new ol.View({
     projection: projection,
     minZoom: 13,
-    maxZoom: 21,
-    padding: [300, 400, 300, 300],
+    maxZoom: 21
 });
+
 
 const map = new ol.Map({
     target: 'map',
     layers: [
+        // Default OSM (optional – you can remove it if you want)
         new ol.layer.Tile({
             source: new ol.source.OSM(),
-            properties: { title: 'OSM', type: 'base' }
-        })
+            properties: { title: 'OSM', type: 'base' },
+            visible: false
+        }),
+
+        // HOT (Humanitarian)
+        new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+                attributions: '© OpenStreetMap contributors, HOT',
+                crossOrigin: 'anonymous'
+            }),
+            properties: { title: 'OSM Humanitarian', type: 'base' },
+            visible: false
+        }),
+        
+new ol.layer.Tile({
+    source: new ol.source.XYZ({
+        url: 'https://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+        attributions: '© OpenStreetMap contributors © CARTO',
+        crossOrigin: 'anonymous'
+    }),
+    properties: { title: 'Light (Carto)', type: 'base' },
+    visible: true
+})
     ],
     view: view
 });
 
 map.once('postrender', function () {
     view.fit(extent, {
-        padding: [300, 300, 300, 600],
+        size: map.getSize(),
         minZoom: 13
     });
 });
+
+
 
 // Initialize Layer Switcher
 initLayerSwitcher();
 
 // Register OSM base layer
 registerLayer(map.getLayers().item(0), 'OpenStreetMap', 'base');
+registerLayer(map.getLayers().item(1), 'Humanitarian', 'base');
+registerLayer(map.getLayers().item(2), 'Light (Carto)', 'base');
+
 
 // Load WMTS
 fetch('https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=b13445c09727289ea77913374cac72ce')
@@ -129,7 +158,8 @@ import('./layers.js').then(module => {
         addClassedIconLayer,
         createGroup,
         registerLayer,
-        addWMSLayer
+        addWMSLayer,
+        addFlowDirectionLayer
     });
 });
 
@@ -138,9 +168,10 @@ export { map };
 
 
 // Create Report Button
+
 const reportBtn = document.createElement('button');
 reportBtn.id = 'btn-generate-report';
-reportBtn.textContent = '📄 Generer PDF over kortudsnit';
+reportBtn.textContent = '📄 Generer PDF\nover kortudsnit';
 reportBtn.style.cssText = `
     position: absolute; 
     top: 80px; 
@@ -155,7 +186,9 @@ reportBtn.style.cssText = `
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     font-size: 13px;
     transition: all 0.2s ease;
+    white-space: pre-line;
 `;
+
 
 // Add hover effect
 reportBtn.addEventListener('mouseenter', () => {

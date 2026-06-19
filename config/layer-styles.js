@@ -778,6 +778,7 @@ export const styles = {
      },
     },
 
+
     broende: {
         type: 'categorized',
         title: 'Brønde',
@@ -843,7 +844,7 @@ PULS:{
         stroke_color: '#ffffff',
         stroke_width: 1,
         geometry_type: 'point',  
-        z_index: 2,
+        z_index: 12,
         attributeTitleField: "attributter",
             attributes: [
         { field: "Name", label: "PULS navn" },                  
@@ -854,6 +855,13 @@ PULS:{
         { field: "LatestNormalDischargeVolume", label: "Udledningsmængde normal år (m3)" },
         { field: "LatestNormalDischargeOverflows", label: "Antal udledninger normal år (n)" },
     ],
+    map_label: {
+            field: 'Name', 
+            color: '#1a1a1a',         
+            outline_color: '#ffffff',
+            placement: 'point',
+            font: 'bold 8px Arial',     
+     },
     },
 
 oplande: {
@@ -877,6 +885,7 @@ oplande: {
             { value: '4306000'},
             { value: '4307000'},
             { value: '4308000'},
+            { value: '7010000'},
             { value: '4309000'},
             { value: '4310000'},
             { value: '4319000'},
@@ -891,7 +900,7 @@ oplande: {
             { value: '6707000'},
             { value: '6709000'},
             { value: '6711000'},
-            { value: '7010000'},
+            
         ],
         default_fill_color: '#999999', stroke_color: '#ffffff', stroke_width: 1,
         fill_alpha: 0.85, z_index: 1,
@@ -911,6 +920,13 @@ oplande: {
         { field: "ÅDT<15000_[Ha]", label: "ÅDT <15000 [Ha.]" },
         { field: "ÅDT>15000_[Ha]", label: "ÅDT >15000 [Ha.]" },
     ],
+            map_label: {
+            field: 'PULS_Navn', 
+            color: '#1a1a1a',         
+            outline_color: '#ffffff',
+            placement: 'point',
+            font: 'bold 8px Arial',     
+     },
     },
 
 
@@ -977,5 +993,48 @@ MIKEResults: {
             { field: 'Maximum',   label: 'Trykniveau (meter over terræn)' },
         ]
     },
+
+niveaumaalere:{
+        type: 'singleColor',
+        title: 'Niveau målere',
+        point_style: 'triangle',
+        geometry_type: 'point',
+        fill_color: '#35d0ff',
+        fill_alpha: 1, stroke_color: 'rgb(0, 0, 0)', stroke_width: 1, z_index: 12,
+    map_label: {
+            field: 'MUID', 
+            color: '#1a1a1a',         
+            outline_color: '#ffffff',
+            placement: 'point',
+            font: 'bold 8px Arial',     
+     },
+    },
+flowretninger: {
+    type: 'flowDirection',
+    title: 'Ledninger flowretninger',
+    geometry_type: 'line',
+ 
+    // Line appearance
+    line_color:   '#2060c0',
+    line_width:   2,
+ 
+    // Arrowhead appearance
+    arrow_color:        '#2060c0',
+    arrow_stroke_color: '#ffffff',
+    arrow_stroke_width: 1,
+    arrow_radius:       6,     // px – triangle size
+ 
+    // Spacing between arrows in screen pixels (scales with zoom automatically)
+    arrow_spacing: 80,
+ 
+    fill_alpha: 0.6,
+    z_index: 6,
+ 
+    // Optional: popup attributes
+    // attributes: [
+    //   { field: 'VANDLOEBSID', label: 'Vandløbs ID' },
+    //   { field: 'NAVN',        label: 'Navn' },
+    // ],
+},
 
 };

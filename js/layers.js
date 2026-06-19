@@ -9,6 +9,7 @@ export function addAllLayers(map, projection, fns) {
         addGraduatedLineLayer,
         addClassedPointLayer,
         addClassedIconLayer,
+        addFlowDirectionLayer,
         createGroup,
     } = fns;
 
@@ -22,6 +23,7 @@ export function addAllLayers(map, projection, fns) {
             case 'classedPoint':  return addClassedPointLayer(map, config, projection);
             case 'classedIcon':  return addClassedIconLayer(map, config, projection);
             case 'wms':           return fns.addWMSLayer(map, config);
+            case 'flowDirection': return addFlowDirectionLayer(map, config, projection);
             default:
                 console.error(`[addLayer] Unknown type: "${config.type}"`);
                 return null;
@@ -165,9 +167,10 @@ export function addAllLayers(map, projection, fns) {
     // ----------------------------------------------------------------
     // Ledningssystem 
     // ----------------------------------------------------------------
-    const grp_Ledningssystem   = createGroup({ title: 'Ledningssystem', fold: 'close' });
+    const grp_Ledningssystem   = createGroup({ title: 'Kloaksystem', fold: 'close' });
 
     addLayer( { ...styles.hovedledninger, folder_destination: 'GeoJSON-data/hovedledninger.geojson', visible: false, group_container: grp_Ledningssystem },);
+    addLayer( { ...styles.flowretninger, folder_destination: 'GeoJSON-data/hovedledninger.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.stik, folder_destination: 'GeoJSON-data/stik.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.broende, folder_destination: 'GeoJSON-data/broende1.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.knuder, folder_destination: 'GeoJSON-data/knuder.geojson', visible: false, group_container: grp_Ledningssystem },);
@@ -184,7 +187,7 @@ export function addAllLayers(map, projection, fns) {
     });   
 
     addLayer( { ...styles.oplande, folder_destination: 'GeoJSON-data/oplande_2.geojson', visible: false, group_container: grp_Ledningssystem },);
-
+    addLayer( { ...styles.niveaumaalere, folder_destination: 'GeoJSON-data/niveaumaalere.geojson', visible: false, group_container: grp_Ledningssystem },);
 
 
     // ----------------------------------------------------------------

@@ -23,10 +23,15 @@ export async function generateReport(map) {
 
         // 1. Capture Map Canvas
         const mapElement = map.getTargetElement();
+
+
         const mapCanvas = mapElement.querySelector('canvas');
-        if (!mapCanvas) throw new Error("Map canvas not found");
+
         
+        if (!mapCanvas) throw new Error("Map canvas not found");
         const mapImgData = mapCanvas.toDataURL('image/jpeg', 0.85);
+
+        
         const mapWidthMm = pageWidth - (margin * 2);
         const mapHeightMm = mapWidthMm * (mapCanvas.height / mapCanvas.width);
 

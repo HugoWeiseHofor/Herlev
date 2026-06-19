@@ -172,11 +172,45 @@ export function registerLayer(layer, title, type = 'overlay', legendItems = [], 
             layer.set('_activeCategories', new Set(categories.map(c => String(c.value))));
         }
 
-        const catContainer = document.createElement('div');
-        catContainer.className = 'ls-category-toggles';
-        catContainer.style.marginTop = '4px';
-        catContainer.style.paddingLeft = '16px';
-        catContainer.style.borderLeft = '2px solid #ccc';
+            // ✅ Collapsible category section
+            const catWrapper = document.createElement('div');
+            catWrapper.className = 'ls-category-wrapper';
+
+            // Header
+            const catHeader = document.createElement('div');
+            catHeader.className = 'ls-category-header';
+            catHeader.style.display = 'flex';
+            catHeader.style.alignItems = 'center';
+            catHeader.style.cursor = 'pointer';
+
+            const catArrow = document.createElement('span');
+            catArrow.textContent = '▾';
+            catArrow.style.marginRight = '6px';
+
+            const catTitle = document.createElement('span');
+            catTitle.textContent = ' ';
+
+            catHeader.appendChild(catArrow);
+            catHeader.appendChild(catTitle);
+
+            // Container (your original content)
+            const catContainer = document.createElement('div');
+            catContainer.className = 'ls-category-toggles';
+            catContainer.style.marginTop = '4px';
+            catContainer.style.paddingLeft = '16px';
+            catContainer.style.borderLeft = '2px solid #ccc';
+
+            // ✅ Toggle logic
+            catHeader.addEventListener('click', () => {
+                const isOpen = catContainer.style.display !== 'none';
+                catContainer.style.display = isOpen ? 'none' : 'block';
+                catArrow.textContent = isOpen ? '▸' : '▾';
+            });
+
+            // Assemble
+            catWrapper.appendChild(catHeader);
+            catWrapper.appendChild(catContainer);
+            wrapper.appendChild(catWrapper);
 
         categories.forEach((cat, idx) => {
             const row = document.createElement('div');
