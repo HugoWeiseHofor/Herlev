@@ -800,25 +800,15 @@ export const styles = {
 }
     },
 
-    knuder: {
+        overloeb: {
         type: 'classedIcon',
-        title: 'Knuder',
-        field: 'KNUDETYPE',
+        title: 'Overløb',
+        field: 'TYPEAFLOEB',
         geometry_type: 'point', 
         stroke_width: 3,
         classes: [
-            { value: 'Overløb',          src: 'images/overloeb.png',         scale: 1.2, label: 'Overløb' },
-        //    { value: 'Fordelerbygværk',  src: 'images/fordelerbygvaerk.png', scale: 0.4, label: 'Fordelerbygværk' },
-        //    { value: 'Nedsivningsanlæg', src: 'images/nedsivningsanlaeg.png',scale: 0.4, label: 'Nedsivningsanlæg' },
-        //    { value: 'Målerbygværk',     src: 'images/maalerbygvaerk.png',   scale: 0.4, label: 'Målerbygværk' },
-        //    { value: 'Regulering',       src: 'images/Regulering.png',       scale: 0.4, label: 'Regulering' },
-        //    { value: 'Renseanlæg',       src: 'images/Renseanlaeg.png',      scale: 0.4, label: 'Renseanlæg' },
-        //    { value: 'Sandfang',         src: 'images/Sandfang.png',         scale: 0.8, label: 'Sandfang' },
-        //    { value: 'Tank',             src: 'images/Tank.png',             scale: 0.4, label: 'Tank' },
-            { value: 'Udløb',            src: 'images/udloeb.png',           scale: 0.8, label: 'Udløb' },
-        //    { value: 'Udskiller',        src: 'images/Udskiller.png',        scale: 0.4, label: 'Udskiller' },
-        //    { value: 'Bassin',           src: 'images/bassin.png',           scale: 0.4, label: 'Bassin' },
-        //    { value: 'Pumpestation',     src: 'images/pumpestation.png',     scale: 1,   label: 'Pumpestation' },
+            { value: 'Fælles',          src: 'images/overloeb1.svg',         scale: 0.01, label: 'Overløb - Følles' },
+            { value: 'Regnvand',          src: 'images/overloeb2.svg',         scale: 0.01, label: 'Overløb - Regnvand' },
         ],
         default_fill_color: '#999999', stroke_color: '#ffffff00', stroke_width: 1,
         fill_alpha: 0.85, z_index: 1,
@@ -833,6 +823,28 @@ export const styles = {
      },
     },
 
+        udloeb: {
+        type: 'classedIcon',
+        title: 'Udløb',
+        field: 'TYPEAFLOEB',
+        geometry_type: 'point', 
+        stroke_width: 3,
+        classes: [
+            { value: 'Fælles',          src: 'images/udloeb1.svg',         scale: 0.01, label: 'Overløb - Fælles' },
+            { value: 'Regnvand',          src: 'images/udloeb2.svg',         scale: 0.01, label: 'Overløb - Regnvand' },
+        ],
+        default_fill_color: '#999999', stroke_color: '#ffffff00', stroke_width: 1,
+        fill_alpha: 0.85, z_index: 1,
+        map_label: {
+            field: 'KNUDENAVN', 
+            color: '#1a1a1a',         
+            outline_color: '#ffffff',
+            placement: 'point',
+            font: 'bold 8px Arial',
+            max_resolution: 1,
+            offset_y: 5,       
+     },
+    },
 
 PULS:{
         type: 'singleColor',
@@ -971,7 +983,7 @@ projekter: {
 
 herlev_graense: {
         type: 'singleColor',
-        title: 'Herlev',
+        title: 'Herlev Kommunegrænse',
         geometry_type: 'line',
         fill_color: '#ffffff00',
         fill_alpha: 1, stroke_color: 'rgb(83, 83, 83)', stroke_width: 1,

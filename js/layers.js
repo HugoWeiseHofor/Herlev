@@ -173,8 +173,9 @@ export function addAllLayers(map, projection, fns) {
     addLayer( { ...styles.flowretninger, folder_destination: 'GeoJSON-data/hovedledninger.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.stik, folder_destination: 'GeoJSON-data/stik.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.broende, folder_destination: 'GeoJSON-data/broende1.geojson', visible: false, group_container: grp_Ledningssystem },);
-    addLayer( { ...styles.knuder, folder_destination: 'GeoJSON-data/knuder.geojson', visible: false, group_container: grp_Ledningssystem },);
-    
+    addLayer( { ...styles.overloeb, folder_destination: 'GeoJSON-data/overloeb.geojson', visible: false, group_container: grp_Ledningssystem },);
+    addLayer( { ...styles.udloeb, folder_destination: 'GeoJSON-data/udloeb.geojson', visible: false, group_container: grp_Ledningssystem },);
+
     addLayer({ 
         ...styles.PULS,
         wfs_url: 'https://pulsgeo.miljoeportal.dk/geoserver/wfs', 
