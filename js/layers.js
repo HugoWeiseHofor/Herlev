@@ -207,6 +207,13 @@ export function addAllLayers(map, projection, fns) {
 
     addLayer( { ...styles.MIKEResults, folder_destination: 'GeoJSON-data/T1_Opstuvning.geojson', visible: false, group_container: grp_MIKEResults },);
 
+    // ----------------------------------------------------------------
+    // Andre Lag
+    // ----------------------------------------------------------------
+    const grp_andrelag   = createGroup({ title: 'Andre lag', fold: 'close' });
+
+    addLayer( { ...styles.v_vandloeb, folder_destination: 'GeoJSON-data/v_vandloeb.geojson', visible: false, group_container: grp_andrelag },);
+
 
     // ----------------------------------------------------------------
     // Omrids (hidden background outline)

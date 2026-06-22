@@ -1049,4 +1049,26 @@ flowretninger: {
     // ],
 },
 
+
+v_vandloeb: {
+        type: 'categorized',
+        title: 'Væsentlige Vandløb',
+        field: 'Navn',
+        geometry_type: 'line',
+        categories: [
+            { value: 'Harrestrup Å', stroke_width: 3, fill_color: '#ffffff00', stroke_color: '#2036b4', fill_alpha: 0.85, label: 'Harrestrup Å' },
+            { value: 'Kags Å', stroke_width: 3, fill_color: '#ffffff00', stroke_color: '#0d7fa1', fill_alpha: 0.85, label: 'Kags Å' },
+            { value: 'Sømose Å', stroke_width: 3, fill_color: '#ffffff00', stroke_color: '#626ab4', fill_alpha: 0.85, label: 'Sømose Å' },
+        ],
+        default_fill_color: '#99999900', stroke_color: '#ffffff00', stroke_width: 0,
+        fill_alpha: 0.85, z_index: 12,
+        map_label: {
+            field: 'Navn',
+            color: '#1a1a1a',         
+            outline_color: '#ffffff',
+            placement: 'point',
+            font: 'bold 8px Arial',     
+     },
+    },
+
 };
