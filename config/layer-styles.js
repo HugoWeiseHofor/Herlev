@@ -807,7 +807,7 @@ export const styles = {
         geometry_type: 'point', 
         stroke_width: 3,
         classes: [
-            { value: 'Fælles',          src: 'images/overloeb1.svg',         scale: 0.01, label: 'Overløb - Følles' },
+            { value: 'Fælles',          src: 'images/overloeb1.svg',         scale: 0.01, label: 'Overløb - Fælles' },
             { value: 'Regnvand',          src: 'images/overloeb2.svg',         scale: 0.01, label: 'Overløb - Regnvand' },
         ],
         default_fill_color: '#999999', stroke_color: '#ffffff00', stroke_width: 1,
@@ -823,7 +823,7 @@ export const styles = {
      },
     },
 
-        udloeb: {
+udloeb: {
         type: 'classedIcon',
         title: 'Udløb',
         field: 'TYPEAFLOEB',
@@ -833,7 +833,7 @@ export const styles = {
             { value: 'Fælles',          src: 'images/udloeb1.svg',         scale: 0.01, label: 'Overløb - Fælles' },
             { value: 'Regnvand',          src: 'images/udloeb2.svg',         scale: 0.01, label: 'Overløb - Regnvand' },
         ],
-        default_fill_color: '#999999', stroke_color: '#ffffff00', stroke_width: 1,
+        default_fill_color: '#490000', stroke_color: '#ffffff00', stroke_width: 1,
         fill_alpha: 0.85, z_index: 1,
         map_label: {
             field: 'KNUDENAVN', 
@@ -1021,6 +1021,21 @@ niveaumaalere:{
             font: 'bold 8px Arial',     
      },
     },
+
+maalestationer:{
+        type: 'singleColor',
+        title: 'Målestationer',
+        point_style: 'circle',
+        geometry_type: 'point',
+        fill_color: '#35d0ff',
+        fill_alpha: 1, stroke_color: 'rgb(0, 0, 0)', stroke_width: 1, z_index: 12,
+    attributes: [
+            { field: 'Navn',   label: 'Navn' },
+            { field: 'Link',   label: "Link", "type": "Link"},
+        ]
+    },
+
+
 flowretninger: {
     type: 'flowDirection',
     title: 'Ledninger flowretninger',
@@ -1048,6 +1063,7 @@ flowretninger: {
     //   { field: 'NAVN',        label: 'Navn' },
     // ],
 },
+
 
 
 v_vandloeb: {

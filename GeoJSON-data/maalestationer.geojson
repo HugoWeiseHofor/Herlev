@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "maalestationer",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::25832" } },
+"features": [
+{ "type": "Feature", "properties": { "Drawings": "1", "layer": "1", "path": "Point?crs=EPSG:25832&field=Drawings:string(255)&uid={b32b9aac-dc9f-4475-af22-ed5e2b7280ec}", "Navn": "53.38 Kagsåen, ns. tilløb fra Kagsmosen", "Link": "https://vandportalen.dk/Home/LocView?locid=294" }, "geometry": { "type": "Point", "coordinates": [ 716933.445346796768717, 6179274.850122692994773 ] } },
+{ "type": "Feature", "properties": { "Drawings": "2", "layer": "2", "path": "Point?crs=EPSG:25832&field=Drawings:string(255)&uid={72402b9e-692d-498e-b62a-37672bf9b242}", "Navn": "53.73 Kagsmosen, v. afløbsrør", "Link": "https://vandportalen.dk/Home/LocView?locid=2707" }, "geometry": { "type": "Point", "coordinates": [ 716965.950179639854468, 6179254.171902390196919 ] } }
+]
+}

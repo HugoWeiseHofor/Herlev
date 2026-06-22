@@ -83,34 +83,41 @@ return legendDiv;
 // ==========================
 // Sync group checkbox with child layer states
 // ==========================
-
 export function syncGroupCheckbox(groupContent) {
     if (!groupContent) return;
-    
     const groupCheck = groupContent.parentNode.querySelector('.ls-group-check');
     if (!groupCheck) return;
-    
+
     const childChecks = groupContent.querySelectorAll('input[type=checkbox].ls-input:not(.ls-group-check)');
-    
+
     if (childChecks.length === 0) {
         groupCheck.checked = false;
         groupCheck.indeterminate = false;
         return;
     }
-    
-    const checkedCount = Array.from(childChecks).filter(cb => cb.checked).length;
-    
-    if (checkedCount === 0) {
+
+    let checkedCount = 0;
+    let hasIndeterminate = false;
+
+    Array.from(childChecks).forEach(cb => {
+        if (cb.indeterminate) {
+            hasIndeterminate = true;
+        } else if (cb.checked) {
+            checkedCount++;
+        }
+    });
+
+    if (checkedCount === 0 && !hasIndeterminate) {
         groupCheck.checked = false;
         groupCheck.indeterminate = false;
-    } else if (checkedCount === childChecks.length) {
+    } else if (checkedCount === childChecks.length && !hasIndeterminate) {
         groupCheck.checked = true;
         groupCheck.indeterminate = false;
     } else {
-        groupCheck.checked = false;
-        groupCheck.indeterminate = true;
+        groupCheck.checked = false; 
+        groupCheck.indeterminate = true; // 🆕 Group is partially active
     }
-    
+
     // Bubble up to parent group if nested
     const parentGroupContent = groupContent.parentElement?.closest('.ls-group-content');
     if (parentGroupContent) {
@@ -148,14 +155,27 @@ export function registerLayer(layer, title, type = 'overlay', legendItems = [], 
         if (type === 'base') {
             baseLayers.forEach(l => l.setVisible(l === layer));
         } else {
-            layer.setVisible(input.checked);
+            const shouldBeChecked = input.checked;
+            layer.setVisible(shouldBeChecked);
+            input.indeterminate = false; // Reset indeterminate when manually toggled
+
+            // 🆕 Sync category checkboxes with the main layer toggle
+            if (categories && categories.length > 0) {
+                const activeSet = layer.get('_activeCategories');
+                if (shouldBeChecked) {
+                    categories.forEach(c => activeSet.add(String(c.value)));
+                } else {
+                    activeSet.clear();
+                }
+                wrapper.querySelectorAll('.ls-cat-input').forEach(cb => cb.checked = shouldBeChecked);
+                layer.changed();
+            }
         }
         const groupContent = container.closest('.ls-group-content');
         if (groupContent && type !== 'base') {
             syncGroupCheckbox(groupContent);
         }
     });
-
     layer.on('change:visible', () => { input.checked = layer.getVisible(); });
 
     const labelEl = document.createElement('label');
@@ -225,12 +245,37 @@ export function registerLayer(layer, title, type = 'overlay', legendItems = [], 
             cb.className = 'ls-input ls-cat-input';
 
             cb.addEventListener('change', () => {
-                const activeSet = layer.get('_activeCategories');
-                const val = String(cat.value);
-                if (cb.checked) activeSet.add(val);
-                else activeSet.delete(val);
-                layer.changed();
-            });
+            const activeSet = layer.get('_activeCategories');
+            const val = String(cat.value);
+            if (cb.checked) activeSet.add(val);
+            else activeSet.delete(val);
+            
+            const allChecked = activeSet.size === categories.length;
+            const noneChecked = activeSet.size === 0;
+            
+            //Sync main layer checkbox and visibility based on category states
+            if (noneChecked) {
+                input.checked = false;
+                input.indeterminate = false;
+                layer.setVisible(false);
+            } else if (allChecked) {
+                input.checked = true;
+                input.indeterminate = false;
+                if (!layer.getVisible()) layer.setVisible(true);
+            } else {
+                input.checked = true; 
+                input.indeterminate = true; // Show main layer as partially active
+                if (!layer.getVisible()) layer.setVisible(true); // Turn layer on if it was off
+            }
+
+            layer.changed();
+            
+            // Sync group checkbox since layer state changed
+            const groupContent = container.closest('.ls-group-content');
+            if (groupContent && type !== 'base') {
+                syncGroupCheckbox(groupContent);
+            }
+        });
 
             // 🎨 Create swatch for this category
             const swatch = document.createElement('span');

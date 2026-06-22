@@ -36,7 +36,7 @@ html, body {
     align-items: center;
     justify-content: space-between;
     padding: 9px 12px;
-    background: #2c5f8a;
+    background: #0f464b;
     color: #fff;
     font-weight: 600;
     font-size: 13px;
@@ -100,7 +100,7 @@ html, body {
 .ls-input {
     margin-top: 2px;
     cursor: pointer;
-    accent-color: #2c5f8a;
+    accent-color: #0f464b;
     flex-shrink: 0;
 }
 
@@ -170,7 +170,7 @@ html, body {
     font-size: 13px;
     color: #222;
     line-height: 1.5;
-    border-left: 4px solid #1c00bd;
+    border-left: 4px solid #0f464b;
     pointer-events: auto;
     order: 999;
 }
@@ -206,16 +206,16 @@ html, body {
     padding: 7px 10px 6px 10px;
     cursor: pointer;
     user-select: none;
-    background: #f0f4f8;
+    background: #ebedef;
     transition: background 0.12s;
 }
 .ls-group-header:hover {
-    background: #e3eaf2;
+    background: #f5f6f8;
 }
 
 .ls-group-arrow {
     font-size: 11px;
-    color: #2c5f8a;
+    color: #0f464b;
     flex-shrink: 0;
     width: 12px;
     text-align: center;
@@ -224,7 +224,7 @@ html, body {
 .ls-group-title {
     font-size: 12px;
     font-weight: 600;
-    color: #1a3a5c;
+    color: #00445e;
     line-height: 1.3;
 }
 
@@ -243,7 +243,7 @@ html, body {
 }
 .ls-group-depth-1 .ls-group-title {
     font-size: 11.5px;
-    color: #2c5f8a;
+    color: #00445e;
     font-weight: 600;
 }
 .ls-group-depth-1 .ls-layer-item {
@@ -322,7 +322,7 @@ Attribute Popup
     margin-bottom: 8px;
     padding-bottom: 6px;
     border-bottom: 1px solid #eee;
-    color: #1a3a5c;
+    color: #0f464b;
 }
 #attribute-popup .popup-row {
     display: flex;
@@ -371,7 +371,7 @@ Attribute Popup
     font-size: 13px;
     color: #222;
     line-height: 1.5;
-    border-left: 4px solid #2c5f8a;
+    border-left: 4px solid #0f464b;
     pointer-events: auto;
 }
 
@@ -379,7 +379,7 @@ Attribute Popup
     display: block;
     font-weight: 700;
     margin-bottom: 3px;
-    color: #1a3a5c;
+    color: #0f464b;
 }
 
 .layer-info-box .lib-text {
@@ -482,7 +482,7 @@ Attribute Popup
 }
 .ls-cat-input {
     cursor: pointer;
-    accent-color: #2c5f8a;
+    accent-color: #0f464b;
 }
 .ls-category-toggles label {
     cursor: pointer;

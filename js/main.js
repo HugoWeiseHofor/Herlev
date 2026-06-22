@@ -1,8 +1,7 @@
 // ==========================
 // Main Entry Point  –  map1
 // ==========================
-
-import { generateReport } from '../config/report-generator.js'; 
+import { generateReport } from '../config/report-generator.js';
 import { initLayerSwitcher, registerLayer, baseLayers, createGroup } from '../config/layer-switcher.js';
 import {
     addThematicLayer,
@@ -16,6 +15,7 @@ import {
     addWMSLayer
 } from '../config/layer-functions.js';
 import { initPopup, showPopup, hidePopup } from '../config/popup.js';
+import { initDrawing, toggleDrawing, clearDrawings } from '../config/drawing.js';
 
 // ==========================
 // Projection setup EPSG:25832
@@ -25,28 +25,22 @@ proj4.defs(
     '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs +type=crs'
 );
 ol.proj.proj4.register(proj4);
-
 const projection = ol.proj.get("EPSG:25832");
 const extent = [712943.56, 6178893.77, 717233.88, 6184484.54];
-
 const view = new ol.View({
     projection: projection,
     minZoom: 13,
     maxZoom: 21
 });
 
-
 const map = new ol.Map({
     target: 'map',
     layers: [
-        // Default OSM (optional – you can remove it if you want)
         new ol.layer.Tile({
             source: new ol.source.OSM(),
             properties: { title: 'OSM', type: 'base' },
             visible: false
         }),
-
-        // HOT (Humanitarian)
         new ol.layer.Tile({
             source: new ol.source.XYZ({
                 url: 'https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
@@ -56,16 +50,15 @@ const map = new ol.Map({
             properties: { title: 'OSM Humanitarian', type: 'base' },
             visible: false
         }),
-        
-new ol.layer.Tile({
-    source: new ol.source.XYZ({
-        url: 'https://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-        attributions: '© OpenStreetMap contributors © CARTO',
-        crossOrigin: 'anonymous'
-    }),
-    properties: { title: 'Light (Carto)', type: 'base' },
-    visible: true
-})
+        new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'https://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                attributions: '© OpenStreetMap contributors © CARTO',
+                crossOrigin: 'anonymous'
+            }),
+            properties: { title: 'Light (Carto)', type: 'base' },
+            visible: true
+        })
     ],
     view: view
 });
@@ -77,8 +70,6 @@ map.once('postrender', function () {
     });
 });
 
-
-
 // Initialize Layer Switcher
 initLayerSwitcher();
 
@@ -86,7 +77,6 @@ initLayerSwitcher();
 registerLayer(map.getLayers().item(0), 'OpenStreetMap', 'base');
 registerLayer(map.getLayers().item(1), 'Humanitarian', 'base');
 registerLayer(map.getLayers().item(2), 'Light (Carto)', 'base');
-
 
 // Load WMTS
 fetch('https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=b13445c09727289ea77913374cac72ce')
@@ -105,14 +95,14 @@ fetch('https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&r
     });
 
 // ==========================
-// Initialize Popup
+// Initialize Popup & Drawing
 // ==========================
 initPopup(map);
+initDrawing(map); // Initialize the drawing layer
 
 // Add click interaction for feature info
 map.on('singleclick', (evt) => {
     hidePopup();
-
     const features = [];
     map.forEachFeatureAtPixel(evt.pixel, (feature, layer) => {
         if (layer && layer.get('attributes')) {
@@ -165,42 +155,108 @@ import('./layers.js').then(module => {
 
 export { map };
 
+// ==========================
+// UI Buttons (Small 32x32 + Hover Expand)
+// ==========================
 
+// 1. Inject precise CSS
+const btnCSS = document.createElement('style');
+btnCSS.innerHTML = `
+  /* REPORT BUTTON: Fixed centering and shorter hover width */
+  .map-btn {
+    position: absolute; left: 14px; top: 80px; z-index: 1001;
+    width: 32px; height: 32px;
+    padding: 0; margin: 0; border: none; border-radius: 4px;
+    background: #00445e; color: #fff;
+    cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; white-space: nowrap;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s ease;
+  }
+  .map-btn::after {
+    content: 'Generer PDF';
+    font-size: 13px;
+    max-width: 0;
+    opacity: 0;
+    margin-left: 0;
+    transition: max-width 0.3s ease, opacity 0.2s ease 0.1s, margin-left 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .map-btn:hover {
+    width: 130px;
+    justify-content: flex-start;
+    padding-left: 8px;
+    background: #1d4263;
+  }
+  .map-btn:hover::after {
+    max-width: 100px;
+    opacity: 1;
+    margin-left: 8px;
+  }
 
-// Create Report Button
+  /* DRAW GROUP: Unchanged since you said it works perfectly */
+  .draw-group {
+    position: absolute; left: 14px; top: 120px; z-index: 1001;
+    height: 32px; width: 32px;
+    background: #00445e; border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    display: flex; overflow: hidden;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s ease;
+  }
+  .draw-group:hover { width: 64px; background: #00445e; }
+  .draw-group button {
+    width: 32px; height: 32px; background: transparent; border: none;
+    color: #fff; cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; line-height: 1;
+    transition: background 0.2s;
+  }
+  .draw-group button:hover { background: rgba(255,255,255,0.15); }
+  .draw-group .active { background: rgba(0,0,0,0.25); }
+`;
+document.head.appendChild(btnCSS);
 
+// Get map container
+const mapContainer = document.getElementById('map');
+
+// 2. Report Button (FIXED: Uses pure textContent, no spans!)
 const reportBtn = document.createElement('button');
 reportBtn.id = 'btn-generate-report';
-reportBtn.textContent = '📄 Generer PDF\nover kortudsnit';
-reportBtn.style.cssText = `
-    position: absolute; 
-    top: 80px; 
-    left: 14px; 
-    z-index: 1001; 
-    padding: 8px 12px; 
-    background: #2c5f8a; 
-    color: #fff; 
-    border: none; 
-    border-radius: 4px; 
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    font-size: 13px;
-    transition: all 0.2s ease;
-    white-space: pre-line;
-`;
-
-
-// Add hover effect
-reportBtn.addEventListener('mouseenter', () => {
-    reportBtn.style.background = '#1d4263';
-    reportBtn.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
-});
-reportBtn.addEventListener('mouseleave', () => {
-    reportBtn.style.background = '#2c5f8a';
-    reportBtn.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
-});
+reportBtn.className = 'map-btn'; 
+reportBtn.textContent = '📄'; // Just the raw emoji, guaranteed to render
+reportBtn.title = 'Generer PDF over kortudsnit';
 
 reportBtn.addEventListener('click', () => {
-    generateReport(map); 
+    generateReport(map);
 });
-document.body.appendChild(reportBtn);
+
+// 3. Draw & Erase Group
+const drawGroup = document.createElement('div');
+drawGroup.className = 'draw-group';
+
+const drawBtn = document.createElement('button');
+drawBtn.innerHTML = '✏️';
+drawBtn.title = 'Tegn på kortet';
+drawBtn.addEventListener('click', () => {
+  if (typeof toggleDrawing === 'function') {
+    const on = toggleDrawing('Polygon');
+    if (on) { drawBtn.classList.add('active'); drawBtn.title = 'Stop tegning'; }
+    else { drawBtn.classList.remove('active'); drawBtn.title = 'Tegn på kortet'; }
+  }
+});
+
+const eraseBtn = document.createElement('button');
+eraseBtn.innerHTML = '🗑️';
+eraseBtn.title = 'Ryd alle tegninger';
+eraseBtn.addEventListener('click', () => {
+  if (typeof clearDrawings === 'function') clearDrawings();
+});
+
+drawGroup.appendChild(drawBtn);
+drawGroup.appendChild(eraseBtn);
+
+// 4. Append BOTH to the map container
+mapContainer.appendChild(reportBtn);
+mapContainer.appendChild(drawGroup);
