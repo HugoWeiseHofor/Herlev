@@ -762,10 +762,21 @@ export const styles = {
         field: 'TYPEAFLOEB',
         geometry_type: 'line', 
         stroke_width: 3,
+
+
+        overrides: [
+                    {
+                    field: 'STATUS_DD',
+                    value: 'Død',
+                    stroke_color: '#c5b8b8',
+                    }
+
+],
         categories: [
             { value: 'Fælles',     stroke_color: '#09ff00b0', label: 'Fælles' },
             { value: 'Regnvand',   stroke_color: '#0004ffb0', label: 'Regnvand' },
             { value: 'Spildevand', stroke_color: '#ff0000b0', label: 'Spildevand' },
+            { value: 'Ikke i brug', stroke_color: '#c5b8b8', label: 'Ikke i brug' },
         ],
         default_fill_color: '#999999', stroke_color: '#ffffff00', stroke_width: 1,
         fill_alpha: 0.85, z_index: 1,

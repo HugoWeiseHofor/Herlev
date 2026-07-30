@@ -623,29 +623,67 @@ export function addCategorizedLayer(map, config, projection) {
 
 
     // 3️⃣ Define style function AFTER layer exists so it captures `layer` in closure
-    function styleFunction(feature, resolution) {
-        try {
-            const activeSet = layer.get('_activeCategories');
-            if (activeSet) {
-                const featureVal = String(feature.get(config.field) ?? '');
-                if (!activeSet.has(featureVal)) return null; // Hide feature
+function styleFunction(feature, resolution) {
+    try {
+        const activeSet = layer.get('_activeCategories');
+
+        if (activeSet) {
+            const featureVal = String(feature.get(config.field) ?? '');
+            if (!activeSet.has(featureVal)) return null;
+        }
+
+        const geomType = feature.getGeometry()?.getType();
+
+        // Evaluate overrides first
+        const override = (config.overrides || []).find(rule => {
+            const featureValue = feature.get(rule.field);
+
+            if (Array.isArray(rule.value)) {
+                return rule.value.includes(featureValue);
             }
 
-            const cat = categoryMap[feature.get(config.field)];
-            const fillColor = cat?.fill ?? defaultFill;
-            const strokeColor = cat?.stroke ?? cat?.fill ?? defaultStroke;
-            const geomType = feature.getGeometry()?.getType();
+            return featureValue === rule.value;
+        });
+
+        if (override) {
             return withLabel(
-            makeGeomStyle(config, geomType, fillColor, strokeColor, strokeColor, cat?.strokeWidth),
+                makeGeomStyle(
+                    config,
+                    geomType,
+                    override.fill_color ?? defaultFill,
+                    override.stroke_color ?? defaultStroke,
+                    override.stroke_color ?? defaultStroke,
+                    override.stroke_width
+                ),
+                config,
+                feature,
+                resolution
+            );
+        }
+
+        // Normal categorization
+        const cat = categoryMap[feature.get(config.field)];
+        const fillColor = cat?.fill ?? defaultFill;
+        const strokeColor = cat?.stroke ?? cat?.fill ?? defaultStroke;
+
+        return withLabel(
+            makeGeomStyle(
+                config,
+                geomType,
+                fillColor,
+                strokeColor,
+                strokeColor,
+                cat?.strokeWidth
+            ),
             config,
             feature,
             resolution
         );
-        } catch (err) {
-            console.error('[addCategorizedLayer] Style error:', err, feature);
-            return null;
-        }
+    } catch (err) {
+        console.error('[addCategorizedLayer] Style error:', err, feature);
+        return null;
     }
+}
 
     // 4️⃣ Apply style
     layer.setStyle(styleFunction);
