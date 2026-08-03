@@ -1,12 +1,13 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis version="3.28.11-Firenze">
+<qgis version="3.44.9-Solothurn">
   <identifier></identifier>
   <parentidentifier></parentidentifier>
   <language></language>
-  <type>dataset</type>
+  <type></type>
   <title></title>
   <abstract></abstract>
   <links/>
+  <dates/>
   <fees></fees>
   <encoding></encoding>
   <crs>

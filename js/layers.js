@@ -186,7 +186,7 @@ export function addAllLayers(map, projection, fns) {
         visible: false, 
         group_container: grp_Ledningssystem 
     });   
-
+    addLayer( { ...styles.oplande_opdelt, folder_destination: 'GeoJSON-data/oplande_opdelt.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.oplande, folder_destination: 'GeoJSON-data/oplande_2.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.niveaumaalere, folder_destination: 'GeoJSON-data/niveaumaalere.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.maalestationer, folder_destination: 'GeoJSON-data/maalestationer.geojson', visible: false, group_container: grp_Ledningssystem },);

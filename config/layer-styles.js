@@ -884,9 +884,25 @@ PULS:{
             outline_color: '#ffffff',
             placement: 'point',
             font: 'bold 8px Arial',     
-     },
+     },SVGAElement
     },
 
+oplande_opdelt: {
+        type: 'categorized',
+        title: 'oplande opdelt på type udløb',
+        field: "type",
+        categories: [
+            { value: "Faelles", stroke_color: "#000000", fill_color: "#c6ef75", label: "Fælles" },
+            { value: "Seperat", stroke_color: "#000000", fill_color: "#76b0dc", label: "Seperat" },
+        ],
+        default_fill_color: "#999999", point_radius: 5, stroke_color: "#ffffff", stroke_width: 3,
+        z_index: 2,
+        attributeTitleField: "attributter",
+            attributes: [
+        { field: "PULS_Navn", label: "PULS_Navn" },
+        { field: "Red_area_P", label: "Red_area_P" },
+    ],
+    },
 oplande: {
         type: 'categorized',
         title: 'Oplande til PULS',

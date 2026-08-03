@@ -343,16 +343,40 @@ function fmtBreak(val, precision = 0) {
 // ── Legend item builders ──────────────────────────────────────
 function legendItemPolygon(color, strokeColor, label) { return { color, strokeColor, label }; }
 function legendItemLine(color, label, lineWidth = 2) { return { color, strokeColor: color, label, line: true, lineWidth }; }
-function legendItemPoint(color, strokeColor, label, pointRadius = 5) { return { color, strokeColor, label, point: true, pointRadius }; }
+function legendItemPoint(
+    color,
+    strokeColor,
+    label,
+    pointRadius = 5,
+    pointStyle = 'circle'
+) {
+
+    console.log('legendItemPoint style=', pointStyle);
+
+    return {
+        color,
+        strokeColor,
+        label,
+        point: true,
+        pointRadius,
+        pointStyle
+    };
+}
 
 function legendItemForGeom(geomHint, color, strokeColor, label, config) {
   if (geomHint === 'line') {
     const w = typeof config.stroke_width === 'number' ? Math.max(1, config.stroke_width) : 2;
     return legendItemLine(color, label, w);
   }
-  if (geomHint === 'point') {
-    return legendItemPoint(color, strokeColor, label, config.point_radius || config.radius || 5);
-  }
+if (geomHint === 'point') {
+    return legendItemPoint(
+        color,
+        strokeColor,
+        label,
+        config.point_radius || config.radius || 5,
+        config.point_style || 'circle'
+    );
+}
   return legendItemPolygon(color, strokeColor, label);
 }
 
