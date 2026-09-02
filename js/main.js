@@ -57,7 +57,7 @@ const map = new ol.Map({
                 crossOrigin: 'anonymous'
             }),
             properties: { title: 'Light (Carto)', type: 'base' },
-            visible: true
+            visible: false
         })
     ],
     view: view
@@ -92,6 +92,7 @@ fetch('https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&r
         const wmtsLayer = new ol.layer.Tile({ source: new ol.source.WMTS(options), visible: false });
         map.addLayer(wmtsLayer);
         registerLayer(wmtsLayer, 'Skærmkort (dæmpet)', 'base');
+        wmtsLayer.setVisible(true);
     });
 
 // ==========================
