@@ -822,7 +822,7 @@ export const styles = {
             { value: 'Regnvand',          src: 'images/overloeb2.svg',         scale: 0.01, label: 'Overløb - Regnvand' },
         ],
         default_fill_color: '#999999', stroke_color: '#ffffff00', stroke_width: 1,
-        fill_alpha: 0.85, z_index: 1,
+        fill_alpha: 0.85, z_index: 10,
         map_label: {
             field: 'KNUDENAVN', 
             color: '#1a1a1a',         
@@ -845,7 +845,7 @@ udloeb: {
             { value: 'Regnvand',          src: 'images/udloeb2.svg',         scale: 0.01, label: 'Overløb - Regnvand' },
         ],
         default_fill_color: '#490000', stroke_color: '#ffffff00', stroke_width: 1,
-        fill_alpha: 0.85, z_index: 1,
+        fill_alpha: 0.85, z_index: 10,
         map_label: {
             field: 'KNUDENAVN', 
             color: '#1a1a1a',         
@@ -887,13 +887,40 @@ PULS:{
      },SVGAElement
     },
 
+regnvands_oplande: {
+        type: 'categorized',
+        title: 'Regnvands Oplande',
+        field: "layer",
+        categories: [
+            { value: "GLSX_RV_DS", stroke_color: "#000000", fill_color: "#75ccef",fill_alpha: 0.7, label: "Gladsaxe" },
+            { value: "HERLEV_RV_DS", stroke_color: "#000000", fill_color: "#154b75",fill_alpha: 0.7, label: "Herlev" },
+            { value: "Rodovre_RV_Opland_Catchments", stroke_color: "#000000", fill_color: "#323fb9",fill_alpha: 0.7, label: "Rødovre" },
+        ],
+        default_fill_color: "#999999", point_radius: 5, stroke_color: "#ffffff", stroke_width: 1,
+        z_index: 2,
+    },
+
+faelles_oplande: {
+        type: 'categorized',
+        title: 'Fælles Oplande',
+        field: "layer",
+        categories: [
+            { value: "glsx", stroke_color: "#000000", fill_color: "#3bcf74",fill_alpha: 0.7, label: "Gladsaxe" },
+            { value: "herlev", stroke_color: "#000000", fill_color: "#10ad3f",fill_alpha: 0.7, label: "Herlev" },
+            { value: "kbh", stroke_color: "#000000", fill_color: "#528641",fill_alpha: 0.7, label: "København" },
+        ],
+        default_fill_color: "#999999", point_radius: 5, stroke_color: "#ffffff", stroke_width: 1,
+        z_index: 2,
+    },
+
+
 oplande_opdelt: {
         type: 'categorized',
-        title: 'oplande opdelt på type udløb',
+        title: 'PULS oplande opdelt på type udløb',
         field: "type",
         categories: [
-            { value: "Faelles", stroke_color: "#000000", fill_color: "#c6ef75", label: "Fælles" },
-            { value: "Seperat", stroke_color: "#000000", fill_color: "#76b0dc", label: "Seperat" },
+            { value: "Faelles", stroke_color: "#000000", fill_color: "#c6ef75",fill_alpha: 0.7, label: "Fælles" },
+            { value: "Seperat", stroke_color: "#000000", fill_color: "#76b0dc",fill_alpha: 0.7, label: "Seperat" },
         ],
         default_fill_color: "#999999", point_radius: 5, stroke_color: "#ffffff", stroke_width: 3,
         z_index: 2,
@@ -903,6 +930,25 @@ oplande_opdelt: {
         { field: "Red_area_P", label: "Red_area_P" },
     ],
     },
+
+// LINKS OPDELT
+
+// REGNVAND
+
+glsx_rv_links: {
+        type: 'singleColor',
+        title: 'glsx_rv_links',
+        geometry_type: 'line',
+        fill_alpha: 1, stroke_color: 'rgb(0, 0, 0)', stroke_width: 1,
+        default_fill_color: '#999999', stroke_width: 1,
+        fill_alpha: 0.85, z_index: 1,
+    },
+
+
+
+
+
+// ================================================================
 oplande: {
         type: 'categorized',
         title: 'Oplande til PULS',
@@ -983,6 +1029,8 @@ oplande: {
             border_color: '#c43c39'     
 }
     },
+
+
 
 
 projekter: {

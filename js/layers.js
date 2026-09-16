@@ -175,7 +175,8 @@ export function addAllLayers(map, projection, fns) {
     addLayer( { ...styles.broende, folder_destination: 'GeoJSON-data/broende1.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.overloeb, folder_destination: 'GeoJSON-data/overloeb.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.udloeb, folder_destination: 'GeoJSON-data/udloeb.geojson', visible: false, group_container: grp_Ledningssystem },);
-
+    addLayer( { ...styles.regnvands_oplande, folder_destination: 'GeoJSON-data/regnvand_oplande.geojson', visible: false, group_container: grp_Ledningssystem },);
+    addLayer( { ...styles.faelles_oplande, folder_destination: 'GeoJSON-data/faelles_oplande.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer({ 
         ...styles.PULS,
         wfs_url: 'https://pulsgeo.miljoeportal.dk/geoserver/wfs', 
@@ -186,6 +187,8 @@ export function addAllLayers(map, projection, fns) {
         visible: false, 
         group_container: grp_Ledningssystem 
     });   
+
+
     addLayer( { ...styles.oplande_opdelt, folder_destination: 'GeoJSON-data/oplande_opdelt.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.oplande, folder_destination: 'GeoJSON-data/oplande_2.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.niveaumaalere, folder_destination: 'GeoJSON-data/niveaumaalere.geojson', visible: false, group_container: grp_Ledningssystem },);
