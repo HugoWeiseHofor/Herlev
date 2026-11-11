@@ -169,6 +169,11 @@ export function addAllLayers(map, projection, fns) {
     // ----------------------------------------------------------------
     const grp_Ledningssystem   = createGroup({ title: 'Kloaksystem', fold: 'close' });
 
+    // regnkval
+    addLayer( { ...styles.regnvandkval, folder_destination: 'GeoJSON-data/regnkvalpoly.geojson', visible: false, group_container: grp_Ledningssystem },);
+    addLayer( { ...styles.oplande_m_regnkvalklasser, folder_destination: 'GeoJSON-data/regnkvalopland.geojson', visible: false, group_container: grp_Ledningssystem },);
+
+
     addLayer( { ...styles.hovedledninger, folder_destination: 'GeoJSON-data/hovedledninger.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.flowretninger, folder_destination: 'GeoJSON-data/hovedledninger.geojson', visible: false, group_container: grp_Ledningssystem },);
     addLayer( { ...styles.stik, folder_destination: 'GeoJSON-data/stik.geojson', visible: false, group_container: grp_Ledningssystem },);

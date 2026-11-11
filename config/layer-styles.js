@@ -1162,4 +1162,47 @@ v_vandloeb: {
      },
     },
 
+
+
+
+regnvandkval: {
+    type: 'categorized',
+    title: 'Regnkval klasser',
+    field: 'Klasse_3',
+    categories: [
+            { value: 'Høje boligområder',                 stroke_width: 0, fill_color: '#aeaeae', stroke_color: '#00000002', fill_alpha: 0.85, label: 'Høje boligområder' },
+            { value: 'Lave boligområder',                 stroke_width: 0, fill_color: '#74c4e1', stroke_color: '#00000002', fill_alpha: 0.85, label: 'Lave boligområder' },
+            { value: 'Parkering',                         stroke_width: 0, fill_color: '#e8718d', stroke_color: '#00000002', fill_alpha: 0.85, label: 'Parkering' },
+            { value: 'Industri',                          stroke_width: 0, fill_color: '#ffffff', stroke_color: '#00000002', fill_alpha: 0.85, label: 'Industri' },
+            { value: 'ÅDT<15000',                         stroke_width: 0, fill_color: '#ff8400', stroke_color: '#00000002', fill_alpha: 0.85, label: 'ÅDT<15000' },
+            { value: 'ÅDT>15000',                         stroke_width: 0, fill_color: '#ff001d', stroke_color: '#00000002', fill_alpha: 0.85, label: 'ÅDT>15000' },
+            { value: 'Kunstgræsbaner med dræn',           stroke_width: 0, fill_color: '#3eff7a', stroke_color: '#00000002', fill_alpha: 0.85, label: 'Kunstgræsbaner med dræn' },
+            { value: 'Ikke_befæstet',                     stroke_width: 0, fill_color: '#33a02c', stroke_color: '#00000002', fill_alpha: 0.85, label: 'Ikke befæstet' },
+            { value: 'Oplagspladser til skrot og affald', stroke_width: 0, fill_color: '#6b390d', stroke_color: '#00000002', fill_alpha: 0.85, label: 'Oplagspladser til skrot og affald' },
+
+
+    ],
+    default_fill_color: '#99999900', stroke_color: '#ffffff00', stroke_width: 0,
+    fill_alpha: 0.85, z_index: 12,
+},
+
+oplande_m_regnkvalklasser: {
+    type: 'singleColor',
+    title: 'Oplande med Regnkval klasser',
+    fill_color: '#ffffff',
+    fill_alpha: 0, stroke_color: 'rgb(0, 0, 0)', stroke_width: 1, z_index: 12,
+    attributes: [
+            { field: 'Høj_bolig_red_ha',   label: 'Høj_bolig_red_ha' },
+            { field: 'lav_bolig_red_ha',   label: "lav_bolig_red_ha"},
+            { field: 'parkering_red_ha',   label: "parkering_red_ha"},
+            { field: 'kunstgræs_bolig_red_ha',   label: "kunstgræs_bolig_red_ha"},
+            { field: 'losseplads_red_ha',   label: "losseplads_red_ha"},
+            { field: 'industri_red_ha',   label: "industri_red_ha"},
+            { field: 'Ikke_bef_red_ha',   label: "Ikke_befæstet_red_ha"},
+            { field: 'ÅDT<15000_red_ha',   label: "ÅDT<15000_red_ha"},
+            { field: 'ÅDT>15000_red_ha',   label: "ÅDT>15000_red_ha"},
+
+        ]
+}
+
 };
